@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Edmond Polinar — Virtual Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --page:#ECEDF3; --tile:#FFFFFF; --fg:#0F1530; --soft:#586082; --line:#DCDFEA;
+  --blue:#2B4BFF; --blue-fg:#FFFFFF; --blue-soft:rgba(255,255,255,.82);
+  --yel:#FFD84D; --yel-fg:#0F1530; --yel-soft:#4A4320;
+  --mint:#BDF0D6; --mint-fg:#0B3A2A; --mint-soft:#2D5F4C;
+  --ink:#0F1530; --ink-fg:#FFFFFF; --ink-soft:#B8BEDB;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page:#090C1A; --tile:#141A33; --fg:#EEF0FA; --soft:#A4ACCB; --line:#252D52;
+    --blue:#4763FF; --mint:#163F31; --mint-fg:#BDF0D6; --mint-soft:#8FCFB4;
+    --ink:#232B55; --ink-fg:#FFFFFF; --ink-soft:#B8BEDB;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#090C1A; --tile:#141A33; --fg:#EEF0FA; --soft:#A4ACCB; --line:#252D52;
+  --blue:#4763FF; --mint:#163F31; --mint-fg:#BDF0D6; --mint-soft:#8FCFB4;
+  --ink:#232B55; --ink-fg:#FFFFFF; --ink-soft:#B8BEDB;
+}
+html{scroll-behavior:smooth; scroll-padding-top:84px;}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--page); color:var(--fg); font-family:'DM Sans',system-ui,sans-serif; line-height:1.55;}
+h1,h2,h3,.num{font-family:'Sora',sans-serif;}
+a{color:inherit;}
+.wrap{max-width:1040px; margin:0 auto; padding:0 16px;}
+
+.nav{position:sticky; top:0; top:env(safe-area-inset-top,0px); z-index:10; padding:12px 16px; padding-top:calc(12px + env(safe-area-inset-top,0px));}
+.nav-in{max-width:1040px; margin:0 auto; background:var(--tile); border:1px solid var(--line); border-radius:999px; padding:8px 8px 8px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px;}
+.nav b{font-family:'Sora',sans-serif; font-size:15px;}
+.nav .links{display:flex; gap:20px; font-size:14px; color:var(--soft);}
+.nav .links a{text-decoration:none;} .nav .links a:hover{color:var(--fg);}
+.pill{display:inline-block; text-decoration:none; background:var(--blue); color:var(--blue-fg); font-weight:700; font-size:14px; padding:10px 18px; border-radius:999px;}
+.pill.ghost{background:transparent; border:2px solid currentColor;}
+
+.bento{display:grid; grid-template-columns:repeat(6,1fr); gap:14px; padding:6px 0 40px;}
+.t{background:var(--tile); border:1px solid var(--line); border-radius:24px; padding:26px; color:var(--fg);}
+.t.blue{background:var(--blue); color:var(--blue-fg); border-color:transparent;}
+.t.yel{background:var(--yel); color:var(--yel-fg); border-color:transparent;}
+.t.mint{background:var(--mint); color:var(--mint-fg); border-color:transparent;}
+.t.ink{background:var(--ink); color:var(--ink-fg); border-color:transparent;}
+.s2{grid-column:span 2;} .s3{grid-column:span 3;} .s4{grid-column:span 4;} .s6{grid-column:span 6;}
+.r2{grid-row:span 2;}
+.eyebrow{font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin:0 0 12px; opacity:.75;}
+
+.hero{display:flex; flex-direction:column; justify-content:space-between; min-height:340px;}
+.hero h1{font-size:clamp(40px,8vw,76px); line-height:1; letter-spacing:-.03em; font-weight:800; margin:6px 0 16px;}
+.hero p{max-width:44ch; font-size:17px; color:var(--blue-soft); margin:0 0 22px;}
+.hero .pill{background:var(--yel); color:var(--yel-fg);}
+.hero .pill.ghost{background:transparent; color:var(--blue-fg);}
+.hero .acts{display:flex; gap:10px; flex-wrap:wrap;}
+
+.stat{display:flex; flex-direction:column; justify-content:flex-end; min-height:160px;}
+.num{font-size:clamp(38px,6vw,56px); font-weight:800; line-height:1; letter-spacing:-.03em;}
+.stat .cap{font-size:14px; margin-top:8px; opacity:.85;}
+.duo{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.duo .num{font-size:clamp(32px,5vw,44px);}
+
+h2{font-size:22px; font-weight:800; margin:0 0 10px; letter-spacing:-.01em;}
+.t p{margin:0; color:var(--soft);} .t.blue p,.t.yel p,.t.mint p,.t.ink p{color:inherit; opacity:.85;}
+h3{font-size:16px; font-weight:700; margin:0 0 6px;}
+.svc .ic{width:38px; height:38px; border-radius:12px; background:var(--yel); color:var(--yel-fg); display:flex; align-items:center; justify-content:center; font-family:'Sora',sans-serif; font-weight:800; font-size:14px; margin-bottom:14px;}
+
+.flow{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:18px;}
+.step{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3); border-radius:14px; padding:12px 16px; font-weight:700; font-size:14px;}
+.step.end{background:var(--yel); color:var(--yel-fg); border-color:transparent;}
+.arrow{font-weight:800; opacity:.7;}
+
+.job{display:grid; grid-template-columns:150px 1fr; gap:6px 24px; padding:22px 0; border-top:1px solid var(--line);}
+.job:first-of-type{border-top:none; padding-top:6px;}
+.job .when{font-weight:700; font-size:13px; color:var(--blue); letter-spacing:.02em;}
+[data-theme="dark"] .job .when{color:#8FA1FF;}
+.job h3{margin:0;} .job .co{font-size:14px; color:var(--soft); margin:2px 0 10px;}
+.job ul{margin:0; padding-left:18px; color:var(--soft); font-size:14.5px;} .job li{margin-bottom:6px;}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+.chip{font-size:13px; font-weight:500; padding:6px 12px; border-radius:999px; background:var(--page); border:1px solid var(--line);}
+.grp{font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--soft); margin:0 0 8px;}
+.edu p{margin:0 0 12px;} .edu p b{display:block; color:var(--fg); font-size:14.5px;} .edu p{font-size:13.5px;}
+
+.contact{text-align:left;}
+.contact h2{font-size:clamp(28px,5vw,44px); letter-spacing:-.02em;}
+.contact .rows{display:grid; gap:6px; margin-top:20px; font-size:16px; font-weight:500;}
+.contact a{text-decoration:none; border-bottom:2px solid var(--yel);}
+footer{text-align:center; font-size:13px; color:var(--soft); padding:0 0 30px; padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));}
+
+.theme-btn{display:flex; align-items:center; gap:8px; background:var(--page); border:1px solid var(--line); border-radius:999px; padding:8px 14px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; color:var(--fg); cursor:pointer;}
+.theme-btn:hover{opacity:.85;}
+.theme-btn .dot{width:9px; height:9px; border-radius:50%; background:var(--blue);}
+
+@media (max-width:760px){
+  .bento{grid-template-columns:1fr;}
+  .s2,.s3,.s4,.s6,.r2{grid-column:span 1; grid-row:auto;}
+  .nav .links{display:none;}
+  .job{grid-template-columns:1fr;}
+  .stat{min-height:130px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-in">
+  <b>Edmond Polinar</b>
+  <div class="links"><a href="#services">Services</a><a href="#work">Work</a><a href="#tools">Tools</a><a href="#contact">Contact</a></div>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode"><span class="dot"></span><span id="themeLabel">Dark</span></button>
+    <a class="pill" href="mailto:edmondpolinar@gmail.com">Email me</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+<div class="bento">
+
+  <div class="t blue hero s4 r2">
+    <div>
+      <p class="eyebrow">Virtual assistant · Data entry · Support · QA</p>
+      <h1>Edmond<br>Polinar</h1>
+      <p>I keep your data accurate, your records organized, and your customers taken care of, with a quality tester's eye for the details others miss.</p>
+    </div>
+    <div class="acts"><a class="pill" href="mailto:edmondpolinar@gmail.com">Email me</a><a class="pill ghost" href="#work">See my work</a></div>
+  </div>
+
+  <div class="t stat s2 ink"><div class="num">2+ yrs</div><div class="cap">QA, support &amp; admin work</div></div>
+  <div class="t stat s2 yel"><div class="num">50+</div><div class="cap">bugs and defects caught and documented</div></div>
+
+  <div class="t s4" id="about">
+    <p class="eyebrow">About</p>
+    <h2>Careful work, dependable support.</h2>
+    <p>Organized, detail-oriented virtual assistant with experience across data entry, documentation, customer support, quality analysis, and workflow coordination. I help clients stay organized and productive through accurate work, clear communication, and dependable day-to-day support.</p>
+  </div>
+  <div class="t mint s2 duo">
+    <div class="stat"><div class="num">500+</div><div class="cap">test cases documented</div></div>
+    <div class="stat"><div class="num">95%</div><div class="cap">QA score in support</div></div>
+  </div>
+
+  <div class="t svc s3" id="services"><div class="ic">01</div><h3>Data entry &amp; records</h3><p>Accurate data entry, verification, spreadsheet tracking, and record keeping in Google Sheets and Excel.</p></div>
+  <div class="t svc s3"><div class="ic">02</div><h3>Admin &amp; documentation</h3><p>Document management, reporting, research, and written guides that make processes easy to follow.</p></div>
+  <div class="t svc s3"><div class="ic">03</div><h3>Customer &amp; client support</h3><p>Chat and email support, logistics follow-up, and clear client communication.</p></div>
+  <div class="t svc s3"><div class="ic">04</div><h3>QA &amp; process checks</h3><p>Manual testing, defect reporting, and workflow checks so problems get caught early.</p></div>
+
+  <div class="t blue s6" id="featured">
+    <p class="eyebrow">Featured project</p>
+    <h2>Order data automation</h2>
+    <p>I designed and built an automation that runs a buyflow through order submission, then stores the order data in Google Sheets automatically. It removes manual data entry and improves accuracy.</p>
+    <div class="flow"><span class="step">Run buyflow</span><span class="arrow">→</span><span class="step">Submit order</span><span class="arrow">→</span><span class="step end">Row added in Google Sheets</span></div>
+  </div>
+
+  <div class="t mint s6">
+    <p class="eyebrow">How I work</p>
+    <div class="duo" style="grid-template-columns:1fr 1fr; gap:24px;">
+      <div><h3>Quick to learn new systems</h3><p>Comfortable picking up new tools, platforms, and processes fast, so I can start contributing without a long ramp-up.</p></div>
+      <div><h3>Takes feedback seriously</h3><p>I treat feedback as a tool for improvement, not criticism, and apply it right away to keep raising the quality of my work.</p></div>
+    </div>
+  </div>
+
+  <div class="t s6" id="work">
+    <p class="eyebrow">Experience</p>
+    <div class="job">
+      <div class="when">2 YEARS</div>
+      <div><h3>Quality Analyst: Software Manual Tester &amp; SME Assistant</h3><div class="co">LotusFlare | T-Mobile Fiber Project</div>
+        <ul>
+          <li>Designed an automation that stores order data in Google Sheets after a buyflow runs through order submission, and built an automated buyflow testing script.</li>
+          <li>Created and maintained 500+ detailed test cases and documentation, kept organized, accurate, and easy to follow.</li>
+          <li>Identified and documented 50+ bugs and defects and caught major defects before production deployment.</li>
+          <li>Supported the live production deployment as one of the QA testers, contributing to a smooth launch.</li>
+          <li>Wrote Master Information Documents on key processes and workflows to help new team members learn the project.</li>
+          <li>Trusted assistant to the POC on the team's most crucial shift, handling testing support and daily responsibilities.</li>
+        </ul></div>
+    </div>
+    <div class="job">
+      <div class="when">OCT 2024 – FEB 2025</div>
+      <div><h3>Chat &amp; Email Support / Logistics</h3><div class="co">Red Wireless</div>
+        <ul>
+          <li>Achieved 95% of available QA evaluation points, showing consistent accuracy and quality.</li>
+          <li>Documented ticket dates and details in a spreadsheet for tracking and accuracy.</li>
+          <li>Resolved customer inquiries by chat and email, handled logistics issues, and recommended products based on customer needs.</li>
+        </ul></div>
+    </div>
+    <div class="job">
+      <div class="when">JULY 2023</div>
+      <div><h3>Office Assistant (SPES)</h3><div class="co">Integrated Barangay Affairs, City Hall</div>
+        <ul><li>Assisted the office with day-to-day records work — encoding and maintaining data in Excel, and receiving, sorting, and filing incoming documents — so staff could stay focused on higher-priority community programs.</li></ul></div>
+    </div>
+    <div class="job">
+      <div class="when">MARCH 2022</div>
+      <div><h3>Office Assistant (SPES)</h3><div class="co">COMELEC</div>
+        <ul><li>Assisted election officers with day-to-day verification work — reviewing voter information for accuracy and handling confidential records with discretion — so officers could stay focused on higher-priority election preparations.</li></ul></div>
+    </div>
+  </div>
+
+  <div class="t s3" id="tools">
+    <p class="eyebrow">Tools &amp; platforms</p>
+    <p class="grp">Spreadsheets &amp; documents</p><div class="chips"><span class="chip">Google Sheets</span><span class="chip">Google Workspace</span><span class="chip">Microsoft Excel</span><span class="chip">Microsoft Office</span></div>
+    <p class="grp">Communication</p><div class="chips"><span class="chip">Slack</span><span class="chip">Microsoft Teams</span><span class="chip">Zoom</span><span class="chip">Skype</span><span class="chip">Outlook</span><span class="chip">WhatsApp</span><span class="chip">Missive</span></div>
+    <p class="grp">CRM &amp; tracking</p><div class="chips"><span class="chip">Pipedrive</span><span class="chip">Jira</span></div>
+    <p class="grp">AI tools</p><div class="chips" style="margin-bottom:0"><span class="chip">ChatGPT</span><span class="chip">Claude</span><span class="chip">Gemini</span></div>
+  </div>
+
+  <div class="t edu s3">
+    <p class="eyebrow">Education &amp; certifications</p>
+    <p><b>Bachelor of Physical Education</b>Cronasia Foundation College, Inc. · 2020–2024</p>
+    <p><b>Emergency First Aid Training &amp; Red Cross Youth Volunteer (P.I.O.)</b>Philippine Red Cross Gensan · April 2023</p>
+    <p><b>Mental Health Awareness Seminar</b>January 2024</p>
+  </div>
+
+  <div class="t ink contact s6" id="contact">
+    <p class="eyebrow">Contact</p>
+    <h2>Let's work together</h2>
+    <p>Have data, admin, or customer support work that needs a careful, dependable hand? I'd be glad to help.</p>
+    <div class="rows">
+      <div><a href="mailto:edmondpolinar@gmail.com">edmondpolinar@gmail.com</a></div>
+      <div><a href="tel:+639386865980">+63 938 686 5980</a></div>
+      <div><a href="https://www.linkedin.com/in/edmond-polinar-957346413/" target="_blank" rel="noopener">linkedin.com/in/edmond-polinar</a></div>
+      <div>General Santos City, Philippines</div>
+    </div>
+  </div>
+
+</div>
+</main>
+<footer>© 2026 Edmond Polinar</footer>
+<script>
+(function(){
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  var label = document.getElementById('themeLabel');
+  var saved = null;
+  try { saved = localStorage.getItem('ep-theme'); } catch(e) {}
+  function apply(theme){
+    if(theme === 'dark' || theme === 'light'){
+      root.setAttribute('data-theme', theme);
+    } else {
+      root.removeAttribute('data-theme');
+    }
+    var isDark = theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    label.textContent = isDark ? 'Light' : 'Dark';
+  }
+  apply(saved);
+  btn.addEventListener('click', function(){
+    var current = root.getAttribute('data-theme');
+    var isDark = current === 'dark' || (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = isDark ? 'light' : 'dark';
+    apply(next);
+    try { localStorage.setItem('ep-theme', next); } catch(e) {}
+  });
+})();
+</script>
+</body>
+</html>
