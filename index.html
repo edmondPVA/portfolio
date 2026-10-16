@@ -100,12 +100,52 @@ footer{text-align:center; font-size:13px; color:var(--soft); padding:0 0 30px; p
 .theme-btn:hover{opacity:.85;}
 .theme-btn .dot{width:9px; height:9px; border-radius:50%; background:var(--blue);}
 
+button.pill{border:0; cursor:pointer; font-family:'DM Sans',sans-serif;}
+button.pill.ghost{color:inherit;}
+
+/* Contact modal */
+body:has(dialog[open]){overflow:hidden;}
+.modal{--err-bg:#FFE3E6; --err-fg:#7A1020; border:1px solid var(--line); border-radius:24px; background:var(--tile); color:var(--fg); padding:0; width:min(520px,calc(100% - 32px)); max-height:calc(100dvh - 32px); overflow:auto; box-shadow:0 24px 60px rgba(15,21,48,.28);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .modal{--err-bg:#3A1620; --err-fg:#FFB4BE;}}
+:root[data-theme="dark"] .modal{--err-bg:#3A1620; --err-fg:#FFB4BE;}
+.modal::backdrop{background:rgba(15,21,48,.55); backdrop-filter:blur(3px);}
+.modal[open]{animation:pop .18s ease-out;}
+@keyframes pop{from{opacity:0; transform:translateY(8px) scale(.98);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){.modal[open]{animation:none;}}
+.modal-in{padding:26px;}
+.modal-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:6px;}
+.modal-head h2{margin:0;}
+.modal .eyebrow{margin-bottom:8px;}
+.modal .sub{margin:0 0 20px; color:var(--soft); font-size:15px;}
+.x-btn{flex:none; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--page); color:var(--fg); font-family:'DM Sans',sans-serif; font-size:22px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+.x-btn:hover{opacity:.85;}
+.frow{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px;}
+.field label{font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--soft);}
+.field input,.field textarea{font:inherit; font-size:15px; color:var(--fg); background:var(--page); border:1px solid var(--line); border-radius:14px; padding:12px 14px; width:100%;}
+.field textarea{min-height:130px; resize:vertical;}
+.field input::placeholder,.field textarea::placeholder{color:var(--soft); opacity:.7;}
+.field input:focus,.field textarea:focus{outline:2px solid var(--blue); outline-offset:1px; border-color:transparent;}
+.hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
+.send{width:100%; padding:13px 18px; font-size:15px;}
+.send[disabled]{opacity:.6; cursor:progress;}
+.form-msg{margin:0 0 14px; padding:12px 14px; border-radius:14px; font-size:14px; font-weight:500; background:var(--err-bg); color:var(--err-fg);}
+.form-msg a{text-decoration:none; border-bottom:2px solid var(--yel);}
+.sent{background:var(--mint); color:var(--mint-fg); border-radius:18px; padding:24px;}
+.sent h3{font-size:20px; margin:0 0 6px;}
+.sent p{margin:0 0 18px; color:var(--mint-fg); opacity:.85;}
+.sent:focus{outline:none;}
+
 @media (max-width:760px){
   .bento{grid-template-columns:1fr;}
   .s2,.s3,.s4,.s6,.r2{grid-column:span 1; grid-row:auto;}
   .nav .links{display:none;}
   .job{grid-template-columns:1fr;}
   .stat{min-height:130px;}
+}
+@media (max-width:560px){
+  .frow{grid-template-columns:1fr; gap:0;}
+  .modal-in{padding:20px;}
 }
 </style>
 </head>
@@ -116,7 +156,7 @@ footer{text-align:center; font-size:13px; color:var(--soft); padding:0 0 30px; p
   <div class="links"><a href="#services">Services</a><a href="#work">Work</a><a href="#tools">Tools</a><a href="#contact">Contact</a></div>
   <div style="display:flex; gap:8px; align-items:center;">
     <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode"><span class="dot"></span><span id="themeLabel">Dark</span></button>
-    <a class="pill" href="mailto:edmondpolinar@gmail.com">Email me</a>
+    <a class="pill" href="mailto:edmondpolinar@gmail.com" data-open-contact>Email me</a>
   </div>
 </div></nav>
 
@@ -129,7 +169,7 @@ footer{text-align:center; font-size:13px; color:var(--soft); padding:0 0 30px; p
       <h1>Edmond<br>Polinar</h1>
       <p>I keep your data accurate, your records organized, and your customers taken care of, with a quality tester's eye for the details others miss.</p>
     </div>
-    <div class="acts"><a class="pill" href="mailto:edmondpolinar@gmail.com">Email me</a><a class="pill ghost" href="#work">See my work</a></div>
+    <div class="acts"><a class="pill" href="mailto:edmondpolinar@gmail.com" data-open-contact>Email me</a><a class="pill ghost" href="#work">See my work</a></div>
   </div>
 
   <div class="t stat s2 ink"><div class="num">2+ yrs</div><div class="cap">Quality Assurance, support &amp; admin work</div></div>
@@ -230,6 +270,42 @@ footer{text-align:center; font-size:13px; color:var(--soft); padding:0 0 30px; p
 </div>
 </main>
 <footer>© 2026 Edmond Polinar</footer>
+
+<dialog class="modal" id="contactModal" aria-labelledby="contactTitle">
+  <div class="modal-in">
+    <div class="modal-head">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2 id="contactTitle">Email me</h2>
+      </div>
+      <button class="x-btn" type="button" id="contactClose" aria-label="Close">&times;</button>
+    </div>
+
+    <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+      <p class="sub">Send me a message and it goes straight to my inbox. I'll get back to you as soon as I can.</p>
+      <input type="hidden" name="access_key" value="721d9f92-5b6c-4599-a4ab-0bbaf61fc5f4">
+      <input type="hidden" name="from_name" value="Portfolio website">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <div class="frow">
+        <div class="field"><label for="cName">Your name</label><input id="cName" name="name" type="text" placeholder="Jane Cruz" autocomplete="name" required maxlength="100"></div>
+        <div class="field"><label for="cEmail">Your email</label><input id="cEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required maxlength="150"></div>
+      </div>
+      <div class="field"><label for="cSubject">Subject</label><input id="cSubject" name="subject" type="text" placeholder="What is this about?" required maxlength="150"></div>
+      <div class="field"><label for="cMessage">Your message</label><textarea id="cMessage" name="message" placeholder="Tell me a bit about what you need help with." required maxlength="3000"></textarea></div>
+
+      <p class="form-msg" id="contactMsg" role="alert" hidden></p>
+      <button class="pill send" type="submit" id="contactSend">Send message</button>
+    </form>
+
+    <div class="sent" id="contactSent" role="status" tabindex="-1" hidden>
+      <h3>Message sent!</h3>
+      <p>Thanks for reaching out. I'll reply to you by email soon.</p>
+      <button class="pill ghost" type="button" id="contactDone">Close</button>
+    </div>
+  </div>
+</dialog>
+
 <script>
 (function(){
   var root = document.documentElement;
@@ -253,6 +329,68 @@ footer{text-align:center; font-size:13px; color:var(--soft); padding:0 0 30px; p
     var next = isDark ? 'light' : 'dark';
     apply(next);
     try { localStorage.setItem('ep-theme', next); } catch(e) {}
+  });
+})();
+
+/* Email me modal. If <dialog> is unsupported, the plain mailto: links keep working. */
+(function(){
+  var modal = document.getElementById('contactModal');
+  if(!modal || typeof modal.showModal !== 'function') return;
+  var form = document.getElementById('contactForm');
+  var sendBtn = document.getElementById('contactSend');
+  var msg = document.getElementById('contactMsg');
+  var sent = document.getElementById('contactSent');
+  var EMAIL = 'edmondpolinar@gmail.com';
+
+  function clearMsg(){ msg.hidden = true; msg.textContent = ''; }
+  function showError(text){
+    msg.textContent = text + ' You can also email me directly at ';
+    var a = document.createElement('a');
+    a.href = 'mailto:' + EMAIL; a.textContent = EMAIL;
+    msg.appendChild(a); msg.appendChild(document.createTextNode('.'));
+    msg.hidden = false;
+  }
+  function openModal(){
+    form.hidden = false; sent.hidden = true; clearMsg();
+    modal.showModal();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-open-contact]'), function(el){
+    el.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+  });
+  document.getElementById('contactClose').addEventListener('click', function(){ modal.close(); });
+  document.getElementById('contactDone').addEventListener('click', function(){ modal.close(); });
+  modal.addEventListener('click', function(e){ if(e.target === modal) modal.close(); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    clearMsg();
+    var data = new FormData(form);
+    if(data.get('botcheck')) return;
+    var key = String(data.get('access_key') || '');
+    if(!key || key.indexOf('YOUR_ACCESS_KEY') === 0){
+      showError('The contact form is not set up yet.');
+      return;
+    }
+    var payload = {};
+    data.forEach(function(v, k){ payload[k] = v; });
+    sendBtn.disabled = true; sendBtn.textContent = 'Sending…';
+
+    fetch(form.action, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify(payload)
+    })
+    .then(function(r){ return r.json().then(function(j){ return r.ok && j.success; }); })
+    .then(function(ok){
+      if(ok){
+        form.reset(); form.hidden = true; sent.hidden = false; sent.focus();
+      } else {
+        showError('Sorry, your message could not be sent.');
+      }
+    })
+    .catch(function(){ showError('Sorry, something went wrong. Please check your connection and try again.'); })
+    .then(function(){ sendBtn.disabled = false; sendBtn.textContent = 'Send message'; });
   });
 })();
 </script>
