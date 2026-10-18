@@ -86,12 +86,24 @@
     }).then(function (res) {
       return parse(res).then(function (data) {
         if (!res.ok) {
-          if (res.status === 429) throw fail('rate', 'Too many attempts. Please wait a minute and try again.', 429);
-          if (data && data.error_code === 'email_not_confirmed') {
-            throw fail('credentials', 'This account’s email is not confirmed yet. Confirm it in Supabase (Authentication → Users).', res.status);
+          var code = data && (data.error_code || data.error || data.code);
+          var text = String((data && (data.msg || data.message || data.error_description)) || '');
+          if (res.status === 429 || code === 'over_request_rate_limit') {
+            throw fail('rate', 'Too many attempts. Please wait a minute and try again.', 429);
           }
-          if (res.status >= 400 && res.status < 500) throw fail('credentials', 'Incorrect email or password.', res.status);
-          throw fail('http', 'Sign-in failed (error ' + res.status + '). Please try again.', res.status);
+          if (code === 'email_not_confirmed') {
+            throw fail('setup', 'This account’s email is not confirmed yet. Confirm it in Supabase (Authentication → Users).', res.status);
+          }
+          if (code === 'email_provider_disabled') {
+            throw fail('setup', 'Email sign-in is turned off in Supabase. Turn it on under Authentication → Sign In / Providers → Email.', res.status);
+          }
+          if (code === 'invalid_credentials' || /invalid login credentials/i.test(text)) {
+            throw fail('credentials', 'Incorrect email or password.', res.status);
+          }
+          if (res.status === 401 || res.status === 403 || /api key/i.test(text)) {
+            throw fail('setup', 'Supabase rejected the site’s key (error ' + res.status + '). The key in admin/config.js may be wrong.', res.status);
+          }
+          throw fail('http', 'Sign-in was refused (error ' + res.status + (code ? ': ' + code : '') + '). Please check your Supabase settings.', res.status);
         }
         var s = normalize(data);
         saveSession(s);
