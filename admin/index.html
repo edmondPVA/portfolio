@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://trhinuauacwgjkpoigdm.supabase.co; base-uri 'none'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Dashboard | Edmond Polinar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<script src="theme.js"></script>
+</head>
+<body>
+
+<div class="gate" id="gate" role="status">Checking your session&hellip;</div>
+
+<div class="app" id="app" hidden>
+  <header class="topbar">
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="side">&#9776;</button>
+    <b>Admin</b>
+    <span class="badge" id="topBadge" hidden>0</span>
+  </header>
+  <div class="scrim" id="scrim"></div>
+
+  <aside class="side" id="side" aria-label="Admin navigation">
+    <div class="brand"><b>Edmond Polinar</b><span>Admin dashboard</span></div>
+    <nav aria-label="Sections">
+      <button class="nav-item" type="button" data-view="overview">Overview</button>
+      <button class="nav-item" type="button" data-view="messages">Messages <span class="badge" id="unreadBadge" hidden>0</span></button>
+      <button class="nav-item" type="button" data-view="skills">Skills <span class="soon-tag">Soon</span></button>
+      <button class="nav-item" type="button" data-view="experience">Work Experience <span class="soon-tag">Soon</span></button>
+      <button class="nav-item" type="button" data-view="projects">Projects <span class="soon-tag">Soon</span></button>
+      <button class="nav-item" type="button" data-view="profile">Profile / About Me <span class="soon-tag">Soon</span></button>
+      <button class="nav-item" type="button" data-view="media">Photo / Media Manager <span class="soon-tag">Soon</span></button>
+      <button class="nav-item" type="button" data-view="settings">Settings <span class="soon-tag">Soon</span></button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="who" id="who"></div>
+    <a class="nav-item" href="../">View portfolio</a>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode"><span class="dot"></span><span id="themeLabel">Dark</span></button>
+    <button class="nav-item" id="logoutBtn" type="button">Log out</button>
+  </aside>
+
+  <main class="main" id="main">
+
+    <section id="view-overview" aria-labelledby="h-overview">
+      <div class="page-head"><h1 id="h-overview">Overview</h1></div>
+      <div class="stats">
+        <div class="t blue stat"><div class="num" id="statTotal">&ndash;</div><div class="cap">Total messages</div></div>
+        <div class="t yel stat"><div class="num" id="statUnread">&ndash;</div><div class="cap">Unread</div></div>
+        <div class="t mint stat"><div class="num" id="statWeek">&ndash;</div><div class="cap">Received in the last 7 days</div></div>
+        <div class="t ink stat"><div class="num" id="statLatest">&ndash;</div><div class="cap">Newest message</div></div>
+      </div>
+      <div class="t recent">
+        <h2>Latest messages</h2>
+        <div class="mlist" id="recent"></div>
+      </div>
+    </section>
+
+    <section id="view-messages" aria-labelledby="h-messages" hidden>
+      <div class="page-head">
+        <h1 id="h-messages">Messages</h1>
+        <button class="pill ghost small" id="refreshBtn" type="button">Refresh</button>
+      </div>
+      <div class="inbox" id="inbox">
+        <div class="t mlist-wrap">
+          <div class="toolbar">
+            <input class="inp" id="search" type="search" placeholder="Search messages" aria-label="Search messages" autocomplete="off">
+            <select class="inp" id="filter" aria-label="Filter messages">
+              <option value="all">All</option>
+              <option value="unread">Unread</option>
+              <option value="read">Read</option>
+            </select>
+          </div>
+          <div class="mlist" id="mlist"></div>
+        </div>
+        <article class="t mdetail" id="mdetail"></article>
+      </div>
+    </section>
+
+    <section id="view-soon" hidden>
+      <div class="page-head"><h1 id="soonTitle"></h1></div>
+      <div class="t soon">
+        <p class="eyebrow">Coming next</p>
+        <h2 id="soonHead"></h2>
+        <p id="soonText"></p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<dialog class="dlg" id="confirmDlg" aria-labelledby="dlgTitle">
+  <h3 id="dlgTitle">Delete this message?</h3>
+  <p id="dlgText"></p>
+  <div class="acts">
+    <button class="pill ghost small" id="dlgCancel" type="button">Cancel</button>
+    <button class="pill danger small" id="dlgOk" type="button">Delete</button>
+  </div>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<noscript><p class="gate">JavaScript is required for the admin dashboard.</p></noscript>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

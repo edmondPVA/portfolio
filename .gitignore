@@ -1,0 +1,16 @@
+# Secrets: never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+service-account*.json
+
+# Tooling and OS files
+node_modules/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

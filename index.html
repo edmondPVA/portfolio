@@ -95,6 +95,8 @@ h3{font-size:16px; font-weight:700; margin:0 0 6px;}
 .contact .rows{display:grid; gap:6px; margin-top:20px; font-size:16px; font-weight:500;}
 .contact a{text-decoration:none; border-bottom:2px solid var(--yel);}
 footer{text-align:center; font-size:13px; color:var(--soft); padding:0 0 30px; padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));}
+footer a{text-decoration:none; opacity:.65;}
+footer a:hover,footer a:focus-visible{opacity:1; text-decoration:underline;}
 
 .theme-btn{display:flex; align-items:center; gap:8px; background:var(--page); border:1px solid var(--line); border-radius:999px; padding:8px 14px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; color:var(--fg); cursor:pointer;}
 .theme-btn:hover{opacity:.85;}
@@ -269,7 +271,8 @@ body:has(dialog[open]){overflow:hidden;}
 
 </div>
 </main>
-<footer>© 2026 Edmond Polinar</footer>
+<footer>© 2026 Edmond Polinar · <a href="admin/login/" rel="nofollow">Admin</a></footer>
+<script src="admin/config.js"></script>
 
 <dialog class="modal" id="contactModal" aria-labelledby="contactTitle">
   <div class="modal-in">
@@ -350,6 +353,17 @@ body:has(dialog[open]){overflow:hidden;}
     msg.appendChild(a); msg.appendChild(document.createTextNode('.'));
     msg.hidden = false;
   }
+  /* Saves a copy of the message to the private admin inbox (Supabase).
+     Visitors can only add messages; the database rules stop them reading anything. */
+  function saveToInbox(p){
+    var c = window.PORTFOLIO_SUPABASE;
+    if(!c || !c.url || !c.key) return Promise.reject(new Error('inbox not configured'));
+    return fetch(c.url + '/rest/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'apikey': c.key, 'Prefer': 'return=minimal'},
+      body: JSON.stringify({name: p.name, email: p.email, subject: p.subject, message: p.message})
+    }).then(function(r){ if(!r.ok) throw new Error('inbox ' + r.status); return true; });
+  }
   function openModal(){
     form.hidden = false; sent.hidden = true; clearMsg();
     modal.showModal();
@@ -376,21 +390,25 @@ body:has(dialog[open]){overflow:hidden;}
     data.forEach(function(v, k){ payload[k] = v; });
     sendBtn.disabled = true; sendBtn.textContent = 'Sending…';
 
-    fetch(form.action, {
+    // Two independent deliveries: the email notification (Web3Forms) and the dashboard inbox.
+    // The visitor sees success if EITHER worked, so a hiccup in one never loses their message.
+    var emailSent = fetch(form.action, {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       body: JSON.stringify(payload)
-    })
-    .then(function(r){ return r.json().then(function(j){ return r.ok && j.success; }); })
-    .then(function(ok){
-      if(ok){
+    }).then(function(r){ return r.json().then(function(j){ return r.ok && j.success === true; }); });
+    var inboxSaved = saveToInbox(payload);
+
+    Promise.allSettled([emailSent, inboxSaved]).then(function(res){
+      var emailOk = res[0].status === 'fulfilled' && res[0].value === true;
+      var inboxOk = res[1].status === 'fulfilled';
+      if(emailOk || inboxOk){
         form.reset(); form.hidden = true; sent.hidden = false; sent.focus();
       } else {
-        showError('Sorry, your message could not be sent.');
+        showError('Sorry, your message could not be sent. Please check your connection and try again.');
       }
-    })
-    .catch(function(){ showError('Sorry, something went wrong. Please check your connection and try again.'); })
-    .then(function(){ sendBtn.disabled = false; sendBtn.textContent = 'Send message'; });
+      sendBtn.disabled = false; sendBtn.textContent = 'Send message';
+    });
   });
 })();
 </script>
