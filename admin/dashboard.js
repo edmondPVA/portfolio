@@ -358,17 +358,22 @@
     });
   }
 
+  function gateLoading() {
+    var gate = $('gate');
+    clear(gate);
+    var sp = el('span', 'spinner');
+    sp.setAttribute('aria-hidden', 'true');
+    gate.appendChild(sp);
+    gate.appendChild(el('span', null, 'Loading…'));
+  }
+
   function gateError(text, retry) {
     var gate = $('gate');
     clear(gate);
-    gate.appendChild(document.createTextNode(text));
+    gate.appendChild(el('span', null, text));
     var b = el('button', 'pill small', 'Try again');
     b.type = 'button';
-    b.addEventListener('click', function () {
-      clear(gate);
-      gate.appendChild(document.createTextNode('Checking your session…'));
-      retry();
-    });
+    b.addEventListener('click', function () { gateLoading(); retry(); });
     gate.appendChild(b);
   }
 
