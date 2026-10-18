@@ -60,6 +60,9 @@ button{font-family:inherit;}
 .auth-card .sub{margin:0 0 22px; color:var(--soft); font-size:15px;}
 .auth-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px;}
 .auth-top b{font-family:'Sora',sans-serif; font-size:15px;}
+.checking-msg{display:none; margin:0 0 18px; color:var(--soft); font-weight:500;}
+.has-session .checking-msg{display:block;}
+.has-session .auth-card form,.has-session .auth-card .back{display:none;}
 .auth-card .pill.full{width:100%; padding:13px 18px; font-size:15px;}
 .back{display:inline-block; margin-top:18px; font-size:14px; color:var(--soft); text-decoration:none;}
 .back:hover{color:var(--fg);}

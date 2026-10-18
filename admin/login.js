@@ -25,11 +25,12 @@
   if (params.get('expired')) show('Your session expired. Please sign in again.', true);
   if (params.get('denied')) show('That account is not authorized to use the admin area.');
 
-  // Already signed in as an admin? Go straight to the dashboard.
+  // Already signed in as an admin? Go straight to the dashboard (the form stays hidden meanwhile).
+  function showForm() { document.documentElement.classList.remove('has-session'); }
   API.getSession().then(function (s) {
-    if (!s) return null;
-    return API.isAdmin().then(function (ok) { if (ok) location.replace(DASHBOARD); });
-  }).catch(function () { /* stay on the sign-in form */ });
+    if (!s) { showForm(); return null; }
+    return API.isAdmin().then(function (ok) { if (ok) location.replace(DASHBOARD); else showForm(); });
+  }).catch(showForm); // on any problem, fall back to the sign-in form
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
