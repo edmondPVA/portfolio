@@ -54,8 +54,24 @@ button{font-family:inherit;}
 .theme-btn .dot{width:9px; height:9px; border-radius:50%; background:var(--blue);}
 
 /* ---------- login ---------- */
-.auth-wrap{min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:24px 16px;}
-.auth-card{width:min(440px,100%); padding:32px;}
+.auth-wrap{position:relative; z-index:1; min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:24px 16px;}
+.auth-card{width:min(440px,100%); padding:32px; box-shadow:0 24px 60px rgba(44,62,80,.28); animation:authpop .18s ease-out;}
+@keyframes authpop{from{opacity:0; transform:translateY(8px) scale(.98);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){.auth-card{animation:none;}}
+/* blurred decorative backdrop behind the sign-in card */
+.auth-bg{position:fixed; inset:0; z-index:0; padding:24px; display:grid; grid-template-columns:repeat(6,1fr); grid-auto-rows:150px; gap:14px; overflow:hidden; filter:blur(7px); transform:scale(1.04); pointer-events:none;}
+.auth-bg div{background:var(--tile); border:1px solid var(--line); border-radius:24px;}
+.auth-bg .ab-blue{background:var(--blue); border-color:transparent;}
+.auth-bg .ab-ink{background:var(--ink); border-color:transparent;}
+.auth-bg .ab-yel{background:var(--yel); border-color:transparent;}
+.auth-bg .ab-mint{background:var(--mint); border-color:transparent;}
+.auth-bg .c2{grid-column:span 2;} .auth-bg .c3{grid-column:span 3;} .auth-bg .c4{grid-column:span 4;} .auth-bg .r2{grid-row:span 2;}
+.auth-veil{position:fixed; inset:0; z-index:0; background:rgba(27,38,49,.35);}
+.has-session .auth-bg,.has-session .auth-veil{display:none;}
+@media (max-width:760px){
+  .auth-bg{grid-template-columns:repeat(2,1fr); grid-auto-rows:120px;}
+  .auth-bg .c2,.auth-bg .c3,.auth-bg .c4{grid-column:auto;} .auth-bg .r2{grid-row:auto;}
+}
 .auth-card h1{font-size:30px; letter-spacing:-.02em; margin-bottom:6px;}
 .auth-card .sub{margin:0 0 22px; color:var(--soft); font-size:15px;}
 .auth-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px;}
