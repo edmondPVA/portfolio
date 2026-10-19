@@ -2,7 +2,8 @@
   'use strict';
 
   var API = window.AdminAPI;
-  var LOGIN = 'login/';
+  var HOME = '../';                 // the portfolio, where the sign-in modal lives
+  var LOGIN = HOME + '?signin=1';
 
   var state = { messages: [], loaded: false, loading: false, loadError: '', selectedId: null, view: 'overview' };
   var bound = false;
@@ -349,7 +350,7 @@
 
     $('logoutBtn').addEventListener('click', function () {
       $('logoutBtn').disabled = true;
-      API.signOut().then(function () { location.replace(LOGIN); });
+      API.signOut().then(function () { location.replace(HOME); });
     });
 
     // A page restored from the back/forward cache must not show the dashboard after logout.
@@ -390,7 +391,7 @@
     API.getSession().then(function (s) {
       if (!s) { location.replace(LOGIN); return; }
       return API.isAdmin().then(function (ok) {
-        if (!ok) return API.signOut().then(function () { location.replace(LOGIN + '?denied=1'); });
+        if (!ok) return API.signOut().then(function () { location.replace(HOME + '?signin=denied'); });
         start(s);
       });
     }).catch(function (err) {
@@ -399,6 +400,6 @@
     });
   }
 
-  API.onSignedOut(function () { location.replace(LOGIN + '?expired=1'); });
+  API.onSignedOut(function () { location.replace(HOME + '?signin=expired'); });
   init();
 })();

@@ -139,6 +139,19 @@ body:has(dialog[open]){overflow:hidden;}
 .sent p{margin:0 0 18px; color:var(--mint-fg); opacity:.85;}
 .sent:focus{outline:none;}
 
+/* Admin sign-in modal */
+.admin-modal{width:min(440px,calc(100% - 32px));}
+.admin-modal::backdrop{background:rgba(27,38,49,.35); backdrop-filter:blur(7px);}
+.admin-modal .modal-in{padding:32px;}
+.admin-top{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:22px;}
+.admin-top b{font-family:'Sora',sans-serif; font-size:15px;}
+.admin-modal .eyebrow{margin-bottom:10px;}
+.admin-modal h2{font-size:30px; letter-spacing:-.02em; margin-bottom:6px;}
+.admin-modal .sub{margin:0 0 22px;}
+.admin-modal .back{display:inline-block; margin-top:18px; font-size:14px; color:var(--soft); text-decoration:none;}
+.admin-modal .back:hover{color:var(--fg);}
+.form-msg.info{background:var(--page); color:var(--fg); border:1px solid var(--line);}
+
 @media (max-width:760px){
   .bento{grid-template-columns:1fr;}
   .s2,.s3,.s4,.s6,.r2{grid-column:span 1; grid-row:auto;}
@@ -272,8 +285,9 @@ body:has(dialog[open]){overflow:hidden;}
 
 </div>
 </main>
-<footer>© 2026 Edmond Polinar · <a href="admin/login/" rel="nofollow">Admin</a></footer>
+<footer>© 2026 Edmond Polinar · <a href="admin/login/" rel="nofollow" data-open-admin>Admin</a></footer>
 <script src="admin/config.js"></script>
+<script src="admin/api.js"></script>
 
 <dialog class="modal" id="contactModal" aria-labelledby="contactTitle">
   <div class="modal-in">
@@ -307,6 +321,34 @@ body:has(dialog[open]){overflow:hidden;}
       <p>Thanks for reaching out. I'll reply to you by email soon.</p>
       <button class="pill ghost" type="button" id="contactDone">Close</button>
     </div>
+  </div>
+</dialog>
+
+<dialog class="modal admin-modal" id="adminModal" aria-labelledby="adminTitle">
+  <div class="modal-in">
+    <div class="admin-top">
+      <b>Edmond Polinar</b>
+      <button class="x-btn" type="button" id="adminClose" aria-label="Close">&times;</button>
+    </div>
+    <p class="eyebrow">Admin</p>
+    <h2 id="adminTitle">Sign in</h2>
+    <p class="sub">Manage your portfolio content and read your messages.</p>
+
+    <p class="form-msg" id="adminMsg" role="alert" hidden></p>
+
+    <form id="adminForm" novalidate>
+      <div class="field">
+        <label for="aEmail">Email</label>
+        <input id="aEmail" name="email" type="email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" required>
+      </div>
+      <div class="field">
+        <label for="aPassword">Password</label>
+        <input id="aPassword" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="pill send" type="submit" id="adminBtn">Sign in</button>
+    </form>
+
+    <a class="back" href="#" id="adminBack">&larr; Back to portfolio</a>
   </div>
 </dialog>
 
@@ -410,6 +452,82 @@ body:has(dialog[open]){overflow:hidden;}
       }
       sendBtn.disabled = false; sendBtn.textContent = 'Send message';
     });
+  });
+})();
+
+/* Admin sign-in modal. If <dialog> or the admin client is unavailable, the footer link
+   simply goes to the regular sign-in page. */
+(function(){
+  var modal = document.getElementById('adminModal');
+  var API = window.AdminAPI;
+  if(!modal || typeof modal.showModal !== 'function' || !API) return;
+
+  var DASHBOARD = 'admin/';
+  var form = document.getElementById('adminForm');
+  var btn = document.getElementById('adminBtn');
+  var msg = document.getElementById('adminMsg');
+  var emailEl = document.getElementById('aEmail');
+  var passEl = document.getElementById('aPassword');
+
+  function show(text, info){ msg.textContent = text; msg.classList.toggle('info', !!info); msg.hidden = false; }
+  function hide(){ msg.hidden = true; msg.textContent = ''; }
+  function busy(on){ btn.disabled = on; btn.textContent = on ? 'Signing in\u2026' : 'Sign in'; }
+  function hasSession(){ try { return !!localStorage.getItem('ep-admin-session'); } catch(e){ return false; } }
+  function openModal(text, info){
+    hide(); busy(false); passEl.value = '';
+    if(text) show(text, info);
+    if(!modal.open) modal.showModal();
+    emailEl.focus();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-open-admin]'), function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      // Already signed in on this browser? Go straight to the dashboard (it checks the session itself).
+      if(hasSession()){ location.href = DASHBOARD; return; }
+      openModal();
+    });
+  });
+  document.getElementById('adminClose').addEventListener('click', function(){ modal.close(); });
+  document.getElementById('adminBack').addEventListener('click', function(e){ e.preventDefault(); modal.close(); });
+  modal.addEventListener('click', function(e){ if(e.target === modal) modal.close(); });
+
+  // The dashboard sends signed-out visitors here as ?signin=1 (or expired / denied).
+  var q = new URLSearchParams(location.search).get('signin');
+  if(q){
+    try { history.replaceState(null, '', location.pathname + location.hash); } catch(e){}
+    if(q === 'expired') openModal('Your session expired. Please sign in again.', true);
+    else if(q === 'denied') openModal('That account is not authorized to use the admin area.');
+    else openModal();
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    hide();
+    var email = emailEl.value.trim();
+    var pw = passEl.value;
+    if(!email || !pw){ show('Enter your email and password.'); return; }
+
+    busy(true);
+    var signedIn = false;
+    API.signIn(email, pw)
+      .then(function(){ signedIn = true; return API.isAdmin(); })
+      .then(function(ok){
+        if(ok){ location.replace(DASHBOARD); return; }
+        return API.signOut().then(function(){
+          passEl.value = '';
+          show('This account is not authorized to use the admin area.');
+          busy(false);
+        });
+      })
+      .catch(function(err){
+        var after = signedIn ? API.signOut() : Promise.resolve();
+        after.then(function(){
+          if(err && err.kind === 'credentials') passEl.value = '';
+          show(err && err.message ? err.message : 'Something went wrong. Please try again.');
+          busy(false);
+        });
+      });
   });
 })();
 </script>
