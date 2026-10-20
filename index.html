@@ -152,6 +152,93 @@ body:has(dialog[open]){overflow:hidden;}
 .admin-modal .back:hover{color:var(--fg);}
 .form-msg.info{background:var(--page); color:var(--fg); border:1px solid var(--line);}
 
+/* Featured project tile + case study window */
+.feat-stats{display:flex; flex-wrap:wrap; gap:10px 28px; margin:20px 0 22px; padding:0; list-style:none;}
+.feat-stats li{font-size:14px; opacity:.95;}
+.feat-stats b{font-family:'Sora',sans-serif; font-size:26px; font-weight:800; margin-right:6px;}
+.feat-btn{background:var(--yel); color:var(--yel-fg);}
+
+.cs-modal{width:min(1040px,calc(100% - 32px)); background:var(--page);}
+.cs-in{padding:0 18px 20px; outline:none;}
+.cs-bar{position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--page); padding:14px 0 12px;}
+.cs-now{min-width:0;}
+.cs-now small{display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; font-weight:700; color:var(--soft);}
+.cs-now b{display:block; font-family:'Sora',sans-serif; font-size:17px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.cs-act{display:flex; gap:8px; align-items:center; flex:none;}
+.cs-act .pill{padding:9px 16px; font-size:13px;}
+.cs-stage{position:relative;}
+.cs-slide{display:none; animation:csIn .35s ease;}
+.cs-slide.is-on{display:block;}
+@keyframes csIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){.cs-slide{animation:none;}}
+
+.cs-grid{display:grid; gap:14px; grid-template-columns:repeat(6,minmax(0,1fr));}
+.cs-c{background:var(--tile); color:var(--fg); border:1px solid var(--line); border-radius:24px; padding:24px; grid-column:span 3; min-width:0;}
+.cs-w{grid-column:span 6;} .cs-t{grid-column:span 2;} .cs-b{grid-column:span 4;}
+.cs-c.cs-blue{background:var(--blue); color:var(--blue-fg); border-color:transparent;}
+.cs-c.cs-yel{background:var(--yel); color:var(--yel-fg); border-color:transparent;}
+.cs-c.cs-mint{background:var(--mint); color:var(--mint-fg); border-color:transparent;}
+.cs-c h1{font-family:'Sora',sans-serif; font-size:clamp(34px,6vw,60px); line-height:1; letter-spacing:-.02em; font-weight:800; margin:0 0 16px; text-wrap:balance;}
+.cs-c h2{font-size:clamp(22px,3.2vw,32px); line-height:1.1; letter-spacing:-.01em; margin:0 0 12px; text-wrap:balance;}
+.cs-c h3{font-size:17px; margin:10px 0 6px;}
+.cs-c p{margin:0 0 10px; color:var(--soft); font-size:15px; line-height:1.55;}
+.cs-blue p,.cs-yel p,.cs-mint p{color:inherit; opacity:.9;}
+.cs-c .eyebrow{margin-bottom:10px;}
+.cs-big{font-family:'Sora',sans-serif; font-size:clamp(40px,6vw,56px); font-weight:800; line-height:1; margin:6px 0 8px; font-variant-numeric:tabular-nums;}
+.cs-num{display:inline-grid; place-items:center; width:38px; height:38px; border-radius:12px; background:var(--yel); color:var(--yel-fg); font-family:'Sora',sans-serif; font-weight:800; font-size:14px; font-variant-numeric:tabular-nums; flex:none;}
+.cs-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+.cs-modal .pill.y{background:var(--yel); color:var(--yel-fg);}
+.cs-tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;}
+.cs-tag,.cs-c code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; background:var(--page); color:var(--fg); padding:3px 8px; border-radius:8px;}
+
+.cs-steps{grid-template-columns:repeat(4,minmax(0,1fr));}
+.cs-steps .cs-c{grid-column:span 1; padding:20px;}
+.cs-steps .cs-c.cs-w{grid-column:span 4;}
+.cs-steps .cs-c p{font-size:14px; margin:0;}
+.cs-stephead{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+.cs-stephead h3{margin:0;}
+.cs-sheetend{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; justify-content:space-between;}
+.cs-sheetend h3{margin:0;}
+
+.cs-sheet{overflow-x:auto; border:1px solid var(--line); border-radius:14px; margin-top:14px; background:var(--tile);}
+.cs-sheet table{border-collapse:collapse; width:100%; min-width:640px; font-size:13px;}
+.cs-sheet th,.cs-sheet td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap;}
+.cs-sheet th{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; font-weight:700; background:var(--page); color:var(--fg);}
+.cs-sheet td{color:var(--soft); font-family:ui-monospace,Menlo,Consolas,monospace;}
+.cs-sheet tr:last-child td{border-bottom:0;}
+.cs-sheet tr.cs-new td{background:var(--mint); color:var(--mint-fg);}
+.cs-c p.cs-sheetcap{font-size:13px; margin:10px 0 0;}
+
+.cs-media{aspect-ratio:16/9; max-width:100%; background:#000; border-radius:18px; overflow:hidden; margin-top:6px;}
+.cs-media video,.cs-media img{width:100%; height:100%; object-fit:contain; display:block;}
+
+.cs-ctrl{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:16px;}
+.cs-dots{display:flex; gap:8px;}
+.cs-dots button{width:10px; height:10px; border-radius:50%; border:0; background:var(--line); cursor:pointer; padding:0;}
+.cs-dots button.is-on{background:var(--blue); width:28px; border-radius:99px;}
+[data-theme="dark"] .cs-dots button.is-on{background:var(--yel);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cs-dots button.is-on{background:var(--yel);}}
+.cs-count{font-size:13px; color:var(--soft); font-weight:700; font-variant-numeric:tabular-nums;}
+/* Arrows sit at the left and right edges, vertically centred in the visible window. */
+.cs-rail{position:sticky; top:50%; height:0; z-index:4;}
+.cs-ar{position:absolute; top:-23px; width:46px; height:46px; border-radius:50%; border:1px solid var(--line); background:var(--tile); color:var(--fg); font-size:20px; line-height:1; cursor:pointer; box-shadow:0 4px 14px rgba(44,62,80,.22);}
+.cs-ar:disabled{opacity:.35; cursor:default;}
+.cs-prev{left:-12px;} .cs-next{right:-12px;}
+.cs-modal :focus-visible{outline:3px solid var(--yel); outline-offset:2px;}
+.cs-c.cs-blue :focus-visible,.cs-c.cs-yel :focus-visible{outline-color:#fff;}
+.cs-c.cs-yel :focus-visible{outline-color:var(--blue);}
+
+@media (max-width:720px){
+  .cs-c,.cs-t,.cs-b{grid-column:span 6; padding:20px;}
+  .cs-steps{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .cs-steps .cs-c{grid-column:span 1; padding:16px;}
+  .cs-steps .cs-c.cs-w{grid-column:span 2;}
+  .cs-in{padding:0 14px 16px;}
+  .cs-modal{border-radius:22px;}
+  .cs-ar{width:40px; height:40px; top:-20px; font-size:18px;}
+  .cs-prev{left:-8px;} .cs-next{right:-8px;}
+}
+
 @media (max-width:760px){
   .bento{grid-template-columns:1fr;}
   .s2,.s3,.s4,.s6,.r2{grid-column:span 1; grid-row:auto;}
@@ -211,6 +298,8 @@ body:has(dialog[open]){overflow:hidden;}
     <h2>Order data automation</h2>
     <p>I designed and built an automation that runs a buyflow through order submission, then stores the order data in Google Sheets automatically. It removes manual data entry and improves accuracy.</p>
     <div class="flow"><span class="step">Run buyflow</span><span class="arrow">→</span><span class="step">Submit order</span><span class="arrow">→</span><span class="step end">Row added in Google Sheets</span></div>
+    <ul class="feat-stats"><li><b>8</b>steps automated</li><li><b>1</b>sheet row per order</li><li><b>0</b>manual copy-and-paste</li></ul>
+    <button class="pill feat-btn" type="button" id="csOpen">Start walkthrough</button>
   </div>
 
   <div class="t mint s6">
@@ -349,6 +438,130 @@ body:has(dialog[open]){overflow:hidden;}
     </form>
 
     <a class="back" href="#" id="adminBack">&larr; Back to portfolio</a>
+  </div>
+</dialog>
+
+<dialog class="modal cs-modal" id="csModal" aria-labelledby="csTitle">
+  <div class="cs-in" id="csIn" tabindex="-1">
+    <header class="cs-bar">
+      <div class="cs-now"><small>Case study</small><b id="csTitle" aria-live="polite">Overview</b></div>
+      <div class="cs-act">
+        <button class="pill" type="button" data-open-contact>Email me</button>
+        <button class="x-btn" type="button" id="csClose" aria-label="Close case study">&times;</button>
+      </div>
+    </header>
+
+    <div class="cs-stage" id="csStage">
+      <div class="cs-rail">
+        <button class="cs-ar cs-prev" id="csPrev" type="button" aria-label="Previous slide">&larr;</button>
+        <button class="cs-ar cs-next" id="csNext" type="button" aria-label="Next slide">&rarr;</button>
+      </div>
+
+      <section class="cs-slide is-on" data-title="Overview">
+        <div class="cs-grid">
+          <div class="cs-c cs-w cs-blue">
+            <p class="eyebrow">Featured project &middot; Case study</p>
+            <h1>Order logging, automated.</h1>
+            <p style="max-width:560px;font-size:17px">A Playwright automation that completes a full fiber order in a QA environment, verifies every page, then records the test account in Google Sheets.</p>
+            <div class="cs-row"><button class="pill y" type="button" data-cs-go="1">Start</button></div>
+          </div>
+          <div class="cs-c cs-t cs-yel"><div class="cs-big">8</div><p>order steps automated, start to finish</p></div>
+          <div class="cs-c cs-t"><div class="cs-big">1</div><p>sheet row per successfully completed order</p></div>
+          <div class="cs-c cs-t cs-mint"><div class="cs-big">0</div><p>manual copy-and-paste of test data</p></div>
+          <div class="cs-c cs-w"><p class="eyebrow">In this walkthrough</p><div class="cs-tags"><span class="cs-tag">The problem</span><span class="cs-tag">The flow</span><span class="cs-tag">The logging step</span><span class="cs-tag">Results</span><span class="cs-tag">Video proof</span><span class="cs-tag">Screenshot proof</span></div></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="The problem">
+        <div class="cs-grid">
+          <div class="cs-c cs-b">
+            <p class="eyebrow">Overview</p>
+            <h2>Every test account meant eight manual steps.</h2>
+            <p>Testers needed fresh accounts for the fiber ordering flow. Each one meant clicking through eight steps by hand, then typing the details into a tracker. It was slow and easy to get wrong.</p>
+            <p>The goal: one run creates a realistic customer, completes the order, confirms the result, and saves the details automatically.</p>
+          </div>
+          <div class="cs-c cs-t cs-yel"><p class="eyebrow">Stack</p><div class="cs-tags"><span class="cs-tag">Python</span><span class="cs-tag">Playwright</span><span class="cs-tag">gspread</span><span class="cs-tag">Google Sheets</span></div></div>
+          <div class="cs-c cs-t"><p class="eyebrow">Before</p><h3>Manual and repetitive</h3><p>Clicking through eight steps, then typing the details into a tracker.</p></div>
+          <div class="cs-c cs-t cs-mint"><p class="eyebrow">After</p><h3>One automated run</h3><p>The order is completed, verified and logged without manual entry.</p></div>
+          <div class="cs-c cs-t cs-blue"><p class="eyebrow">My role</p><h3>Built the automation</h3><p>Designed the flow, the checks and the sheet logging.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="The flow">
+        <div class="cs-grid cs-steps">
+          <div class="cs-c cs-w"><p class="eyebrow">How it works</p><h2>Eight steps, one run</h2></div>
+          <div class="cs-c"><div class="cs-stephead"><span class="cs-num">01</span><h3>Check address</h3></div><p>Types an address, picks the suggestion and a unit.</p></div>
+          <div class="cs-c"><div class="cs-stephead"><span class="cs-num">02</span><h3>Choose offer</h3></div><p>Selects the first available plan.</p></div>
+          <div class="cs-c"><div class="cs-stephead"><span class="cs-num">03</span><h3>Get started</h3></div><p>Generates a random name and unique email, fills the form.</p></div>
+          <div class="cs-c"><div class="cs-stephead"><span class="cs-num">04</span><h3>Verify</h3></div><p>Enters the test OTP code and submits.</p></div>
+          <div class="cs-c"><div class="cs-stephead"><span class="cs-num">05</span><h3>Schedule</h3></div><p>Picks the first open install slot.</p></div>
+          <div class="cs-c"><div class="cs-stephead"><span class="cs-num">06</span><h3>Pay</h3></div><p>Enters a test card and checks the autopay message.</p></div>
+          <div class="cs-c"><div class="cs-stephead"><span class="cs-num">07</span><h3>Review</h3></div><p>Checks every section of the order.</p></div>
+          <div class="cs-c"><div class="cs-stephead"><span class="cs-num">08</span><h3>Confirm</h3></div><p>Submits and validates the confirmation page.</p></div>
+          <div class="cs-c cs-w cs-mint"><div class="cs-sheetend"><h3>Then: one row added to Google Sheets</h3><span class="cs-tag">log_order_to_sheet()</span></div></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="What gets saved">
+        <div class="cs-grid">
+          <div class="cs-c cs-w">
+            <p class="eyebrow">The logging step</p>
+            <h2>What gets saved</h2>
+            <p style="max-width:680px">After the confirmation page passes every check, <code>log_order_to_sheet()</code> signs in with a service account and appends one row to a tracker worksheet.</p>
+            <div class="cs-sheet" role="region" aria-label="Tracker worksheet columns" tabindex="0">
+              <table>
+                <thead><tr><th>Environment</th><th>Account type</th><th>Address</th><th>Name</th><th>Email</th><th>Phone</th><th>DOB</th><th>PIN</th></tr></thead>
+                <tbody><tr class="cs-new"><td>&bull;&bull;&bull;</td><td>&bull;&bull;&bull;</td><td>&bull;&bull;&bull;</td><td>&bull;&bull;&bull;</td><td>&bull;&bull;&bull;</td><td>&bull;&bull;&bull;</td><td>&bull;&bull;&bull;</td><td>&bull;&bull;&bull;</td></tr></tbody>
+              </table>
+            </div>
+            <p class="cs-sheetcap">One new row per completed order. Values are hidden here.</p>
+          </div>
+          <div class="cs-c cs-b cs-mint"><p class="eyebrow">Safe by design</p><p>Logging runs only after the assertions pass, so the sheet holds working accounts only. A failed write prints a message instead of crashing the run.</p></div>
+          <div class="cs-c cs-t cs-blue"><p class="eyebrow">Precision first</p><h3>Automated, never careless.</h3><p>The data saved matches exactly what was entered in the order.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Results">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">Results</p><h2>What changed for the team</h2></div>
+          <div class="cs-c cs-t cs-yel"><h3>Faster setup</h3><p>A complete test account in a single run.</p></div>
+          <div class="cs-c cs-t"><h3>Fewer errors</h3><p>Data typed into the form is the data written to the sheet.</p></div>
+          <div class="cs-c cs-t cs-mint"><h3>Built-in checks</h3><p>Every review and confirmation heading is asserted on each run.</p></div>
+          <div class="cs-c cs-t"><h3>More efficient</h3><p>The repetitive clicking and typing is handled by the script.</p></div>
+          <div class="cs-c cs-t cs-yel"><h3>Less time-consuming</h3><p>What used to take many manual steps now takes a single run.</p></div>
+          <div class="cs-c cs-t cs-blue"><h3>Time to focus elsewhere</h3><p>While the automation runs, I can work on other tasks instead of waiting on it.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Watch it run" id="csVideoSlide">
+        <div class="cs-grid"><div class="cs-c cs-w">
+          <p class="eyebrow">Proof &middot; Video</p><h2>Watch it run</h2>
+          <div class="cs-media"><video controls playsinline muted preload="none" poster="assets/order-logging/poster.jpg" src="assets/order-logging/clip.mp4" aria-label="Screen recording of the automation running an order and logging it to Google Sheets"></video></div>
+        </div></div>
+      </section>
+
+      <section class="cs-slide" data-title="The logged result">
+        <div class="cs-grid"><div class="cs-c cs-w">
+          <p class="eyebrow">Proof &middot; Screenshot</p><h2>The logged result</h2>
+          <div class="cs-media"><img src="assets/order-logging/sheet.jpg" loading="lazy" alt="Google Sheets tracker with the logged order rows and the sharing panel set to Restricted"></div>
+        </div></div>
+      </section>
+
+      <section class="cs-slide" data-title="Let's talk">
+        <div class="cs-grid">
+          <div class="cs-c cs-w cs-blue">
+            <p class="eyebrow">Wrap-up</p>
+            <h1 style="font-size:clamp(30px,5vw,52px)">Careful work, dependable support.</h1>
+            <p style="font-size:17px;max-width:560px">Need accurate data, tested workflows, or a QA eye on your process? Let's talk.</p>
+            <h2 style="margin-top:22px">Want something like this for your team?</h2>
+            <div class="cs-row"><button class="pill y" type="button" data-open-contact>Email me</button><button class="pill ghost" type="button" data-cs-go="0">Replay</button></div>
+            <p style="font-size:13px;margin:18px 0 0">Note: All data used in this project is fictional test data, created only to demonstrate how the automation works.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="cs-ctrl"><div class="cs-dots" id="csDots"></div><span class="cs-count" id="csCount"></span></div>
   </div>
 </dialog>
 
@@ -529,6 +742,94 @@ body:has(dialog[open]){overflow:hidden;}
         });
       });
   });
+})();
+
+/* Case study window (Featured project). If <dialog> is unsupported the button is hidden. */
+(function(){
+  var modal = document.getElementById('csModal');
+  var opener = document.getElementById('csOpen');
+  if(!modal || !opener) return;
+  if(typeof modal.showModal !== 'function'){ opener.hidden = true; return; }
+
+  var slides = Array.prototype.slice.call(modal.querySelectorAll('.cs-slide'));
+  var dots = document.getElementById('csDots');
+  var titleEl = document.getElementById('csTitle');
+  var countEl = document.getElementById('csCount');
+  var prev = document.getElementById('csPrev');
+  var next = document.getElementById('csNext');
+  var video = modal.querySelector('video');
+  var i = 0;
+
+  slides.forEach(function(s, n){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Go to slide ' + (n + 1) + ': ' + s.getAttribute('data-title'));
+    b.addEventListener('click', function(){ go(n); });
+    dots.appendChild(b);
+  });
+
+  function go(n){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(s, k){ s.classList.toggle('is-on', k === i); });
+    Array.prototype.forEach.call(dots.children, function(d, k){
+      d.classList.toggle('is-on', k === i);
+      if(k === i) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+    });
+    titleEl.textContent = slides[i].getAttribute('data-title');
+    countEl.textContent = (i + 1) + ' / ' + slides.length;
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
+    if(video && !slides[i].contains(video)) video.pause();
+    modal.scrollTop = 0;
+  }
+
+  prev.addEventListener('click', function(){ go(i - 1); });
+  next.addEventListener('click', function(){ go(i + 1); });
+  Array.prototype.forEach.call(modal.querySelectorAll('[data-cs-go]'), function(b){
+    b.addEventListener('click', function(){ go(parseInt(b.getAttribute('data-cs-go'), 10) || 0); });
+  });
+
+  // Arrow keys move between slides (but leave the video's own seek keys alone).
+  modal.addEventListener('keydown', function(e){
+    if(e.target && e.target.closest && e.target.closest('video, input, textarea, select')) return;
+    if(e.key === 'ArrowRight'){ e.preventDefault(); go(i + 1); }
+    else if(e.key === 'ArrowLeft'){ e.preventDefault(); go(i - 1); }
+  });
+
+  // Swipe on phones.
+  var stage = document.getElementById('csStage');
+  var tx = null;
+  stage.addEventListener('touchstart', function(e){
+    tx = (e.target.closest && e.target.closest('video')) ? null : e.touches[0].clientX;
+  }, {passive: true});
+  stage.addEventListener('touchend', function(e){
+    if(tx === null) return;
+    var d = e.changedTouches[0].clientX - tx;
+    tx = null;
+    if(Math.abs(d) > 60) go(i + (d < 0 ? 1 : -1));
+  });
+
+  opener.addEventListener('click', function(){
+    go(0);
+    modal.showModal();
+    document.getElementById('csIn').focus({preventScroll: true});
+  });
+  document.getElementById('csClose').addEventListener('click', function(){ modal.close(); });
+  modal.addEventListener('click', function(e){ if(e.target === modal) modal.close(); });
+
+  // "Email me" buttons carry data-open-contact, so the contact form opens; close this window behind it.
+  Array.prototype.forEach.call(modal.querySelectorAll('[data-open-contact]'), function(b){
+    b.addEventListener('click', function(){ modal.close(); });
+  });
+
+  modal.addEventListener('close', function(){
+    if(video) video.pause();
+    var other = document.getElementById('contactModal');
+    if(other && other.open) return;
+    opener.focus();
+  });
+
+  go(0);
 })();
 </script>
 </body>
