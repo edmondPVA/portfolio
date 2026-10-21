@@ -284,7 +284,7 @@ body:has(dialog[open]){overflow:hidden;}
 .cs-media{aspect-ratio:16/9; max-width:100%; background:#000; border-radius:18px; overflow:hidden; margin-top:6px;}
 .cs-media video,.cs-media img{width:100%; height:100%; object-fit:contain; display:block;}
 
-.cs-ctrl{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:16px;}
+.cs-ctrl{position:sticky; bottom:0; z-index:4; display:flex; align-items:center; justify-content:center; gap:14px; margin-top:12px; padding:12px 0 2px; background:var(--page);}
 .cs-dots{display:flex; gap:8px;}
 .cs-dots button{width:10px; height:10px; border-radius:50%; border:0; background:var(--line); cursor:pointer; padding:0;}
 .cs-dots button.is-on{background:var(--blue); width:28px; border-radius:99px;}
@@ -292,10 +292,9 @@ body:has(dialog[open]){overflow:hidden;}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cs-dots button.is-on{background:var(--yel);}}
 .cs-count{font-size:13px; color:var(--soft); font-weight:700; font-variant-numeric:tabular-nums;}
 /* Arrows sit at the left and right edges, vertically centred in the visible window. */
-.cs-rail{position:sticky; top:50%; height:0; z-index:4;}
-.cs-ar{position:absolute; top:-23px; width:46px; height:46px; border-radius:50%; border:1px solid var(--line); background:var(--tile); color:var(--fg); font-size:20px; line-height:1; cursor:pointer; box-shadow:0 4px 14px rgba(44,62,80,.22);}
+.cs-ar{flex:none; width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--tile); color:var(--fg); font-size:19px; line-height:1; cursor:pointer;}
+.cs-ar:hover:not(:disabled){background:var(--blue); color:var(--blue-fg); border-color:transparent;}
 .cs-ar:disabled{opacity:.35; cursor:default;}
-.cs-prev{left:-12px;} .cs-next{right:-12px;}
 .cs-modal :focus-visible{outline:3px solid var(--yel); outline-offset:2px;}
 .cs-c.cs-blue :focus-visible,.cs-c.cs-yel :focus-visible{outline-color:#fff;}
 .cs-c.cs-yel :focus-visible{outline-color:var(--blue);}
@@ -307,8 +306,8 @@ body:has(dialog[open]){overflow:hidden;}
   .cs-steps .cs-c.cs-w{grid-column:span 2;}
   .cs-in{padding:0 14px 16px;}
   .cs-modal{border-radius:22px;}
-  .cs-ar{width:40px; height:40px; top:-20px; font-size:18px;}
-  .cs-prev{left:-8px;} .cs-next{right:-8px;}
+  .cs-ar{width:40px; height:40px; font-size:18px;}
+  .cs-ctrl{gap:10px;}
 }
 
 @media (max-width:760px){
@@ -419,7 +418,7 @@ body:has(dialog[open]){overflow:hidden;}
   <div class="t s6" id="work">
     <p class="eyebrow">Experience</p>
     <div class="job">
-      <div class="when">FEBRUARY 2025</div>
+      <div class="when">2 YEARS</div>
       <div><h3>Quality Assurance Analyst: Software Tester &amp; SME Assistant</h3><div class="co">LotusFlare | T-Mobile Fiber Project</div>
         <ul>
           <li>Designed an automation that stores order data in Google Sheets after a buyflow runs through order submission, and built an automated buyflow testing script.</li>
@@ -432,7 +431,7 @@ body:has(dialog[open]){overflow:hidden;}
         </ul></div>
     </div>
     <div class="job">
-      <div class="when">SEPTEMBER 2024</div>
+      <div class="when">OCT 6 MONTHS</div>
       <div><h3>Chat &amp; Email Support / Logistics</h3><div class="co">Red Wireless</div>
         <ul>
           <li>Achieved 95% of available QA evaluation points, showing consistent accuracy and quality.</li>
@@ -559,10 +558,6 @@ body:has(dialog[open]){overflow:hidden;}
     </header>
 
     <div class="cs-stage" id="csStage">
-      <div class="cs-rail">
-        <button class="cs-ar cs-prev" id="csPrev" type="button" aria-label="Previous slide">&larr;</button>
-        <button class="cs-ar cs-next" id="csNext" type="button" aria-label="Next slide">&rarr;</button>
-      </div>
 
       <section class="cs-slide is-on" data-title="Overview">
         <div class="cs-grid">
@@ -668,7 +663,7 @@ body:has(dialog[open]){overflow:hidden;}
       </section>
     </div>
 
-    <div class="cs-ctrl"><div class="cs-dots" id="csDots"></div><span class="cs-count" id="csCount"></span></div>
+    <div class="cs-ctrl"><button class="cs-ar cs-prev" id="csPrev" type="button" aria-label="Previous slide">&larr;</button><div class="cs-dots" id="csDots"></div><span class="cs-count" id="csCount"></span><button class="cs-ar cs-next" id="csNext" type="button" aria-label="Next slide">&rarr;</button></div>
   </div>
 </dialog>
 
