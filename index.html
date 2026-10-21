@@ -162,22 +162,24 @@ body:has(dialog[open]){overflow:hidden;}
 .feat-stats li{font-size:14px; opacity:.95;}
 .feat-stats b{font-family:'Sora',sans-serif; font-size:26px; font-weight:800; margin-right:6px;}
 .feat-btn{background:var(--yel); color:var(--yel-fg);}
-/* Margin animations: small work-themed line icons in the empty side space (wide screens only) */
-.side{position:fixed; top:0; bottom:0; width:max(0px,calc((100vw - 1040px)/2)); pointer-events:none; z-index:0; display:none; overflow:hidden;}
-.side.l{left:0;} .side.r{right:0;}
-@media (min-width:1260px){.side{display:block;}}
-.mi{position:absolute; color:var(--soft); opacity:.34; will-change:transform;}
-.mi.amb{color:var(--yel); opacity:.5;}
+/* Drifting background icons: small work-themed line icons that float slowly across the whole page, behind all content */
+.drift{position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden;}
+.mi{position:absolute; color:var(--soft); opacity:.3; will-change:transform; animation:var(--path,miA) var(--t,60s) ease-in-out var(--dl,0s) infinite alternate;}
+.mi.amb{color:var(--yel); opacity:.45;}
 .mi svg{display:block; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round;}
 .mi .in{width:100%; height:100%; animation:miBob var(--d,14s) ease-in-out var(--dl,0s) infinite;}
-@keyframes miBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-18px) rotate(5deg)}}
+@keyframes miA{0%{transform:translate(0,0)}33%{transform:translate(32vw,-10vh)}66%{transform:translate(14vw,24vh)}100%{transform:translate(46vw,8vh)}}
+@keyframes miB{0%{transform:translate(0,0)}33%{transform:translate(-28vw,14vh)}66%{transform:translate(-10vw,-18vh)}100%{transform:translate(-40vw,6vh)}}
+@keyframes miC{0%{transform:translate(0,0)}50%{transform:translate(18vw,28vh)}100%{transform:translate(-14vw,10vh)}}
+@keyframes miBob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-16px) rotate(7deg)}}
 .mi.spin .in{animation:miBob var(--d,14s) ease-in-out var(--dl,0s) infinite, miTurn 40s linear infinite;}
 @keyframes miTurn{to{rotate:360deg}}
 .mi.dice .in svg{animation:miRoll 9s cubic-bezier(.3,.1,.2,1) var(--dl,0s) infinite;}
 @keyframes miRoll{0%,70%{transform:rotate(0)}85%{transform:rotate(380deg) scale(1.08)}100%{transform:rotate(360deg)}}
 .mi.tick .in svg path.t{stroke-dasharray:30; stroke-dashoffset:30; animation:miDraw 7s ease-in-out var(--dl,0s) infinite;}
 @keyframes miDraw{0%,15%{stroke-dashoffset:30}35%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:30}}
-@media (prefers-reduced-motion:reduce){.mi .in,.mi.dice .in svg,.mi.tick .in svg path.t{animation:none !important;} .mi.tick .in svg path.t{stroke-dashoffset:0;}}
+@media (max-width:760px){.mi{opacity:.22}.mi.amb{opacity:.32}.mi.hide-sm{display:none}}
+@media (prefers-reduced-motion:reduce){.mi,.mi .in,.mi.dice .in svg,.mi.tick .in svg path.t{animation:none !important;} .mi.tick .in svg path.t{stroke-dashoffset:0;}}
 
 /* Featured project: animated automation demo */
 .feat-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:28px; align-items:center;}
@@ -292,8 +294,17 @@ body:has(dialog[open]){overflow:hidden;}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cs-dots button.is-on{background:var(--yel);}}
 .cs-count{font-size:13px; color:var(--soft); font-weight:700; font-variant-numeric:tabular-nums;}
 /* Arrows sit at the left and right edges, vertically centred in the visible window. */
-.cs-ar{flex:none; width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--tile); color:var(--fg); font-size:19px; line-height:1; cursor:pointer;}
-.cs-ar:hover:not(:disabled){background:var(--blue); color:var(--blue-fg); border-color:transparent;}
+/* Prev/next arrows: glass buttons fixed at the vertical middle of the screen, so they never move when a slide changes height */
+.cs-ar{position:fixed; top:50%; margin-top:-22px; z-index:8; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; padding:0; font-size:19px; line-height:1; cursor:pointer; color:var(--fg);
+  background:color-mix(in srgb,var(--fg) 8%,transparent); border:1px solid color-mix(in srgb,var(--fg) 24%,transparent);
+  -webkit-backdrop-filter:blur(10px) saturate(1.5); backdrop-filter:blur(10px) saturate(1.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55), 0 4px 16px rgba(44,62,80,.16); transition:background .2s, transform .2s;}
+.cs-ar:hover:not(:disabled){background:color-mix(in srgb,var(--fg) 16%,transparent); transform:scale(1.06);}
+.cs-prev{left:calc(50% - min(520px, 50% - 16px) + 3px);} .cs-next{right:calc(50% - min(520px, 50% - 16px) + 3px);}
+@media (min-width:1168px){.cs-prev{left:calc(50% - 576px);} .cs-next{right:calc(50% - 576px);}}
+@media (max-width:1167px){.cs-modal .cs-in{padding-left:28px; padding-right:28px;}}
+@media (max-width:760px){.cs-modal .cs-in{padding-left:24px; padding-right:24px;} .cs-ar{width:32px; height:32px; margin-top:-16px; font-size:16px;}}
+@media (prefers-reduced-motion:reduce){.cs-ar{transition:none;}}
 .cs-ar:disabled{opacity:.35; cursor:default;}
 .cs-modal :focus-visible{outline:3px solid var(--yel); outline-offset:2px;}
 .cs-c.cs-blue :focus-visible,.cs-c.cs-yel :focus-visible{outline-color:#fff;}
@@ -306,7 +317,6 @@ body:has(dialog[open]){overflow:hidden;}
   .cs-steps .cs-c.cs-w{grid-column:span 2;}
   .cs-in{padding:0 14px 16px;}
   .cs-modal{border-radius:22px;}
-  .cs-ar{width:40px; height:40px; font-size:18px;}
   .cs-ctrl{gap:10px;}
 }
 
@@ -325,21 +335,20 @@ body:has(dialog[open]){overflow:hidden;}
 </head>
 <body>
 
-<div class="side l" aria-hidden="true">
-  <div class="mi dice" style="width:46px;height:46px;top:8vh;left:22%;--d:13s;--dl:0s" data-p="0.02"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8"/><circle cx="16" cy="16" r="2.2"/><circle cx="32" cy="16" r="2.2"/><circle cx="24" cy="24" r="2.2"/><circle cx="16" cy="32" r="2.2"/><circle cx="32" cy="32" r="2.2"/></svg></div></div>
-  <div class="mi spin amb" style="width:40px;height:40px;top:26vh;left:55%;--d:18s;--dl:-4s" data-p="0.032"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="6"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M36.7 11.3l-4.2 4.2M15.5 32.5l-4.2 4.2"/><circle cx="24" cy="24" r="12"/></svg></div></div>
-  <div class="mi " style="width:44px;height:44px;top:44vh;left:30%;--d:15s;--dl:-7s" data-p="0.044"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="32" rx="5"/><path d="M6 19h36M6 29h36M19 8v32"/></svg></div></div>
-  <div class="mi tick" style="width:38px;height:38px;top:62vh;left:62%;--d:16s;--dl:-2s" data-p="0.056"><div class="in"><svg viewBox="0 0 48 48"><rect x="7" y="7" width="34" height="34" rx="8"/><path class="t" d="M15 25l7 7 12-14"/></svg></div></div>
-  <div class="mi " style="width:40px;height:40px;top:80vh;left:38%;--d:14s;--dl:-9s" data-p="0.068"><div class="in"><svg viewBox="0 0 48 48"><rect x="5" y="10" width="38" height="28" rx="6"/><path d="M7 14l17 13 17-13"/></svg></div></div>
+<div class="drift" aria-hidden="true">
+  <div class="mi dice" style="width:46px;height:46px;left:6%;top:10%;--path:miA;--t:70s;--dl:0s;--d:12s"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8"/><circle cx="16" cy="16" r="2.2"/><circle cx="32" cy="16" r="2.2"/><circle cx="24" cy="24" r="2.2"/><circle cx="16" cy="32" r="2.2"/><circle cx="32" cy="32" r="2.2"/></svg></div></div>
+  <div class="mi spin amb hide-sm" style="width:40px;height:40px;left:78%;top:8%;--path:miB;--t:64s;--dl:-12s;--d:14s"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="6"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M36.7 11.3l-4.2 4.2M15.5 32.5l-4.2 4.2"/><circle cx="24" cy="24" r="12"/></svg></div></div>
+  <div class="mi " style="width:44px;height:44px;left:20%;top:34%;--path:miC;--t:58s;--dl:-5s;--d:16s"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="32" rx="5"/><path d="M6 19h36M6 29h36M19 8v32"/></svg></div></div>
+  <div class="mi tick hide-sm" style="width:38px;height:38px;left:88%;top:30%;--path:miB;--t:75s;--dl:-30s;--d:18s"><div class="in"><svg viewBox="0 0 48 48"><rect x="7" y="7" width="34" height="34" rx="8"/><path class="t" d="M15 25l7 7 12-14"/></svg></div></div>
+  <div class="mi " style="width:40px;height:40px;left:10%;top:58%;--path:miA;--t:66s;--dl:-18s;--d:20s"><div class="in"><svg viewBox="0 0 48 48"><rect x="5" y="10" width="38" height="28" rx="6"/><path d="M7 14l17 13 17-13"/></svg></div></div>
+  <div class="mi  hide-sm" style="width:40px;height:40px;left:72%;top:52%;--path:miC;--t:60s;--dl:-9s;--d:12s"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M24 14v10l7 5"/></svg></div></div>
+  <div class="mi dice amb" style="width:42px;height:42px;left:40%;top:16%;--path:miA;--t:80s;--dl:-40s;--d:14s"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8"/><circle cx="16" cy="16" r="2.2"/><circle cx="32" cy="32" r="2.2"/><circle cx="24" cy="24" r="2.2"/></svg></div></div>
+  <div class="mi tick hide-sm" style="width:38px;height:38px;left:55%;top:72%;--path:miB;--t:72s;--dl:-22s;--d:16s"><div class="in"><svg viewBox="0 0 48 48"><rect x="9" y="8" width="30" height="35" rx="5"/><rect x="17" y="4" width="14" height="8" rx="3"/><path class="t" d="M17 26l5 5 9-10"/></svg></div></div>
+  <div class="mi " style="width:40px;height:40px;left:30%;top:86%;--path:miC;--t:68s;--dl:-15s;--d:18s"><div class="in"><svg viewBox="0 0 48 48"><path d="M8 40V28M20 40V16M32 40V24M44 40H4"/></svg></div></div>
+  <div class="mi  hide-sm" style="width:42px;height:42px;left:90%;top:76%;--path:miB;--t:62s;--dl:-3s;--d:20s"><div class="in"><svg viewBox="0 0 48 48"><path d="M8 10h32a3 3 0 013 3v18a3 3 0 01-3 3H22l-10 8v-8H8a3 3 0 01-3-3V13a3 3 0 013-3z"/><path d="M14 20h20M14 26h12"/></svg></div></div>
+  <div class="mi dice" style="width:46px;height:46px;left:4%;top:80%;--path:miA;--t:78s;--dl:-27s;--d:12s"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8"/><circle cx="16" cy="16" r="2.2"/><circle cx="32" cy="16" r="2.2"/><circle cx="24" cy="24" r="2.2"/><circle cx="16" cy="32" r="2.2"/><circle cx="32" cy="32" r="2.2"/></svg></div></div>
+  <div class="mi spin amb hide-sm" style="width:40px;height:40px;left:60%;top:38%;--path:miC;--t:84s;--dl:-33s;--d:14s"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="6"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M36.7 11.3l-4.2 4.2M15.5 32.5l-4.2 4.2"/><circle cx="24" cy="24" r="12"/></svg></div></div>
 </div>
-<div class="side r" aria-hidden="true">
-  <div class="mi " style="width:40px;height:40px;top:10vh;left:58%;--d:17s;--dl:-3s" data-p="0.02"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M24 14v10l7 5"/></svg></div></div>
-  <div class="mi dice amb" style="width:42px;height:42px;top:30vh;left:26%;--d:12s;--dl:-6s" data-p="0.032"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8"/><circle cx="16" cy="16" r="2.2"/><circle cx="32" cy="32" r="2.2"/><circle cx="24" cy="24" r="2.2"/></svg></div></div>
-  <div class="mi tick" style="width:38px;height:38px;top:48vh;left:52%;--d:15s;--dl:-1s" data-p="0.044"><div class="in"><svg viewBox="0 0 48 48"><rect x="9" y="8" width="30" height="35" rx="5"/><rect x="17" y="4" width="14" height="8" rx="3"/><path class="t" d="M17 26l5 5 9-10"/></svg></div></div>
-  <div class="mi " style="width:40px;height:40px;top:66vh;left:30%;--d:18s;--dl:-10s" data-p="0.056"><div class="in"><svg viewBox="0 0 48 48"><path d="M8 40V28M20 40V16M32 40V24M44 40H4"/></svg></div></div>
-  <div class="mi " style="width:42px;height:42px;top:83vh;left:60%;--d:13s;--dl:-5s" data-p="0.068"><div class="in"><svg viewBox="0 0 48 48"><path d="M8 10h32a3 3 0 013 3v18a3 3 0 01-3 3H22l-10 8v-8H8a3 3 0 01-3-3V13a3 3 0 013-3z"/><path d="M14 20h20M14 26h12"/></svg></div></div>
-</div>
-
 <nav class="nav"><div class="nav-in">
   <a class="brand" href="#" aria-label="Edmond Polinar, home"><img src="favicon.svg" alt="" width="34" height="34"><b>Edmond Polinar</b></a>
   <div class="links"><a href="#services">Services</a><a href="#work">Work</a><a href="#tools">Tools</a><a href="#contact">Contact</a></div>
@@ -663,7 +672,9 @@ body:has(dialog[open]){overflow:hidden;}
       </section>
     </div>
 
-    <div class="cs-ctrl"><button class="cs-ar cs-prev" id="csPrev" type="button" aria-label="Previous slide">&larr;</button><div class="cs-dots" id="csDots"></div><span class="cs-count" id="csCount"></span><button class="cs-ar cs-next" id="csNext" type="button" aria-label="Next slide">&rarr;</button></div>
+    <div class="cs-ctrl"><div class="cs-dots" id="csDots"></div><span class="cs-count" id="csCount"></span></div>
+    <button class="cs-ar cs-prev" id="csPrev" type="button" aria-label="Previous slide">&larr;</button>
+    <button class="cs-ar cs-next" id="csNext" type="button" aria-label="Next slide">&rarr;</button>
   </div>
 </dialog>
 
@@ -892,21 +903,6 @@ body:has(dialog[open]){overflow:hidden;}
     var io = new IntersectionObserver(function(e){ if(e[0].isIntersecting){ count(); io.disconnect(); } }, {threshold:.4});
     io.observe(document.getElementById('featured'));
   }
-})();
-
-/* Margin animations: gentle parallax on scroll (skipped when motion is reduced). */
-(function(){
-  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var mis = [].slice.call(document.querySelectorAll('.mi')), tk = false;
-  if(!mis.length) return;
-  window.addEventListener('scroll', function(){
-    if(tk) return; tk = true;
-    requestAnimationFrame(function(){
-      var y = window.scrollY;
-      mis.forEach(function(m){ m.style.transform = 'translateY(' + (-y * parseFloat(m.getAttribute('data-p'))).toFixed(1) + 'px)'; });
-      tk = false;
-    });
-  }, {passive:true});
 })();
 
 /* Case study window (Featured project). If <dialog> is unsupported the button is hidden. */
