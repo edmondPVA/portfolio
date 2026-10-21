@@ -162,6 +162,23 @@ body:has(dialog[open]){overflow:hidden;}
 .feat-stats li{font-size:14px; opacity:.95;}
 .feat-stats b{font-family:'Sora',sans-serif; font-size:26px; font-weight:800; margin-right:6px;}
 .feat-btn{background:var(--yel); color:var(--yel-fg);}
+/* Margin animations: small work-themed line icons in the empty side space (wide screens only) */
+.side{position:fixed; top:0; bottom:0; width:max(0px,calc((100vw - 1040px)/2)); pointer-events:none; z-index:0; display:none; overflow:hidden;}
+.side.l{left:0;} .side.r{right:0;}
+@media (min-width:1260px){.side{display:block;}}
+.mi{position:absolute; color:var(--soft); opacity:.34; will-change:transform;}
+.mi.amb{color:var(--yel); opacity:.5;}
+.mi svg{display:block; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round;}
+.mi .in{width:100%; height:100%; animation:miBob var(--d,14s) ease-in-out var(--dl,0s) infinite;}
+@keyframes miBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-18px) rotate(5deg)}}
+.mi.spin .in{animation:miBob var(--d,14s) ease-in-out var(--dl,0s) infinite, miTurn 40s linear infinite;}
+@keyframes miTurn{to{rotate:360deg}}
+.mi.dice .in svg{animation:miRoll 9s cubic-bezier(.3,.1,.2,1) var(--dl,0s) infinite;}
+@keyframes miRoll{0%,70%{transform:rotate(0)}85%{transform:rotate(380deg) scale(1.08)}100%{transform:rotate(360deg)}}
+.mi.tick .in svg path.t{stroke-dasharray:30; stroke-dashoffset:30; animation:miDraw 7s ease-in-out var(--dl,0s) infinite;}
+@keyframes miDraw{0%,15%{stroke-dashoffset:30}35%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:30}}
+@media (prefers-reduced-motion:reduce){.mi .in,.mi.dice .in svg,.mi.tick .in svg path.t{animation:none !important;} .mi.tick .in svg path.t{stroke-dashoffset:0;}}
+
 /* Featured project: animated automation demo */
 .feat-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:28px; align-items:center;}
 @media (max-width:820px){.feat-grid{grid-template-columns:minmax(0,1fr);}}
@@ -198,14 +215,17 @@ body:has(dialog[open]){overflow:hidden;}
 .fx-sheet{background:var(--tile); color:var(--fg); border-radius:12px; overflow:hidden; font-size:13px; font-variant-numeric:tabular-nums;}
 .fx-sheet-h{display:flex; align-items:center; gap:8px; padding:8px 12px; background:var(--mint); color:var(--mint-fg); font-weight:700; font-size:12px;}
 .fx-sheet-h i{width:10px; height:14px; border-radius:2px; background:#4CA36F; display:inline-block;}
-.fx-row{display:grid; grid-template-columns:1.1fr 1fr .9fr; gap:8px; padding:8px 12px; border-top:1px solid var(--line); max-height:40px; overflow:hidden;}
-.fx-row.head{font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--soft); border-top:0;}
-.fx-row.new{animation:fxSlide .6s cubic-bezier(.2,.8,.2,1) both, fxFlash 2.2s ease-out .2s both;}
-@keyframes fxSlide{from{max-height:0; padding-block:0; opacity:0; transform:translateY(-8px)}to{max-height:40px; opacity:1; transform:none}}
+.fx-rows{height:114px; overflow:hidden; position:relative;}
+.fx-list{will-change:transform;}
+.fx-list.shift{animation:fxShift .55s cubic-bezier(.2,.8,.2,1) both;}
+@keyframes fxShift{from{transform:translateY(-38px)}to{transform:none}}
+.fx-row{display:grid; grid-template-columns:1.1fr 1fr .9fr; gap:8px; padding:0 12px; height:38px; align-items:center; border-top:1px solid var(--line); overflow:hidden;}
+.fx-row.head{height:auto; padding:8px 12px; font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--soft); border-top:0;}
+.fx-row.new{animation:fxFlash 2.2s ease-out .15s both;}
 @keyframes fxFlash{0%,35%{background:color-mix(in srgb,var(--yel) 55%,transparent)}100%{background:transparent}}
 .fx-cap{font-size:12px; opacity:.7; margin:0; text-align:right;}
 @media (prefers-reduced-motion:reduce){
-  .feat-btn::after,.fx-live i,.fx-step.now .fx-dot,.fx-row.new{animation:none;}
+  .feat-btn::after,.fx-live i,.fx-step.now .fx-dot,.fx-row.new,.fx-list.shift{animation:none;}
   .fx-step,.fx-link i{transition:none;}
 }
 
@@ -306,6 +326,21 @@ body:has(dialog[open]){overflow:hidden;}
 </head>
 <body>
 
+<div class="side l" aria-hidden="true">
+  <div class="mi dice" style="width:46px;height:46px;top:8vh;left:22%;--d:13s;--dl:0s" data-p="0.02"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8"/><circle cx="16" cy="16" r="2.2"/><circle cx="32" cy="16" r="2.2"/><circle cx="24" cy="24" r="2.2"/><circle cx="16" cy="32" r="2.2"/><circle cx="32" cy="32" r="2.2"/></svg></div></div>
+  <div class="mi spin amb" style="width:40px;height:40px;top:26vh;left:55%;--d:18s;--dl:-4s" data-p="0.032"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="6"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M36.7 11.3l-4.2 4.2M15.5 32.5l-4.2 4.2"/><circle cx="24" cy="24" r="12"/></svg></div></div>
+  <div class="mi " style="width:44px;height:44px;top:44vh;left:30%;--d:15s;--dl:-7s" data-p="0.044"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="32" rx="5"/><path d="M6 19h36M6 29h36M19 8v32"/></svg></div></div>
+  <div class="mi tick" style="width:38px;height:38px;top:62vh;left:62%;--d:16s;--dl:-2s" data-p="0.056"><div class="in"><svg viewBox="0 0 48 48"><rect x="7" y="7" width="34" height="34" rx="8"/><path class="t" d="M15 25l7 7 12-14"/></svg></div></div>
+  <div class="mi " style="width:40px;height:40px;top:80vh;left:38%;--d:14s;--dl:-9s" data-p="0.068"><div class="in"><svg viewBox="0 0 48 48"><rect x="5" y="10" width="38" height="28" rx="6"/><path d="M7 14l17 13 17-13"/></svg></div></div>
+</div>
+<div class="side r" aria-hidden="true">
+  <div class="mi " style="width:40px;height:40px;top:10vh;left:58%;--d:17s;--dl:-3s" data-p="0.02"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M24 14v10l7 5"/></svg></div></div>
+  <div class="mi dice amb" style="width:42px;height:42px;top:30vh;left:26%;--d:12s;--dl:-6s" data-p="0.032"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8"/><circle cx="16" cy="16" r="2.2"/><circle cx="32" cy="32" r="2.2"/><circle cx="24" cy="24" r="2.2"/></svg></div></div>
+  <div class="mi tick" style="width:38px;height:38px;top:48vh;left:52%;--d:15s;--dl:-1s" data-p="0.044"><div class="in"><svg viewBox="0 0 48 48"><rect x="9" y="8" width="30" height="35" rx="5"/><rect x="17" y="4" width="14" height="8" rx="3"/><path class="t" d="M17 26l5 5 9-10"/></svg></div></div>
+  <div class="mi " style="width:40px;height:40px;top:66vh;left:30%;--d:18s;--dl:-10s" data-p="0.056"><div class="in"><svg viewBox="0 0 48 48"><path d="M8 40V28M20 40V16M32 40V24M44 40H4"/></svg></div></div>
+  <div class="mi " style="width:42px;height:42px;top:83vh;left:60%;--d:13s;--dl:-5s" data-p="0.068"><div class="in"><svg viewBox="0 0 48 48"><path d="M8 10h32a3 3 0 013 3v18a3 3 0 01-3 3H22l-10 8v-8H8a3 3 0 01-3-3V13a3 3 0 013-3z"/><path d="M14 20h20M14 26h12"/></svg></div></div>
+</div>
+
 <nav class="nav"><div class="nav-in">
   <a class="brand" href="#" aria-label="Edmond Polinar, home"><img src="favicon.svg" alt="" width="34" height="34"><b>Edmond Polinar</b></a>
   <div class="links"><a href="#services">Services</a><a href="#work">Work</a><a href="#tools">Tools</a><a href="#contact">Contact</a></div>
@@ -366,7 +401,7 @@ body:has(dialog[open]){overflow:hidden;}
         <div class="fx-sheet" aria-hidden="true">
           <div class="fx-sheet-h"><i></i>Order log</div>
           <div class="fx-row head"><span>Order</span><span>Status</span><span>Logged</span></div>
-          <div id="fxRows"></div>
+          <div class="fx-rows"><div class="fx-list" id="fxRows"></div></div>
         </div>
         <p class="fx-cap">Illustration with sample order numbers</p>
       </div>
@@ -826,7 +861,8 @@ body:has(dialog[open]){overflow:hidden;}
     var r = document.createElement('div'); r.className = 'fx-row' + (animate ? ' new' : '');
     r.innerHTML = '<span>ORD-' + (n++) + '</span><span>Submitted</span><span>' + today() + '</span>';
     rows.insertBefore(r, rows.firstChild);
-    while(rows.children.length > 3) rows.removeChild(rows.lastChild);
+    while(rows.children.length > 4) rows.removeChild(rows.lastChild);
+    if(animate && !still){ rows.classList.remove('shift'); void rows.offsetWidth; rows.classList.add('shift'); }
   }
   function setStage(s){
     flow.setAttribute('data-s', s);
@@ -860,6 +896,21 @@ body:has(dialog[open]){overflow:hidden;}
     var io = new IntersectionObserver(function(e){ if(e[0].isIntersecting){ count(); io.disconnect(); } }, {threshold:.4});
     io.observe(document.getElementById('featured'));
   }
+})();
+
+/* Margin animations: gentle parallax on scroll (skipped when motion is reduced). */
+(function(){
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var mis = [].slice.call(document.querySelectorAll('.mi')), tk = false;
+  if(!mis.length) return;
+  window.addEventListener('scroll', function(){
+    if(tk) return; tk = true;
+    requestAnimationFrame(function(){
+      var y = window.scrollY;
+      mis.forEach(function(m){ m.style.transform = 'translateY(' + (-y * parseFloat(m.getAttribute('data-p'))).toFixed(1) + 'px)'; });
+      tk = false;
+    });
+  }, {passive:true});
 })();
 
 /* Case study window (Featured project). If <dialog> is unsupported the button is hidden. */
