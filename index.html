@@ -416,6 +416,14 @@ body:has(dialog[open]){overflow:hidden;}
     </div>
   </div>
 
+  <div class="t mint s6" id="crm-practice">
+    <p class="eyebrow">Practice project</p>
+    <h2>CRM Practice Simulator</h2>
+    <p>A practice CRM I used to rehearse day-to-day virtual assistant tasks. Fictional data, nothing is sent.</p>
+    <div class="chips" style="margin:16px 0 20px"><span class="chip">Dashboard</span><span class="chip">Contacts</span><span class="chip">Opportunities</span><span class="chip">Conversations</span><span class="chip">Calendars</span><span class="chip">Automation</span></div>
+    <button class="pill feat-btn" type="button" id="crmOpen">Start walkthrough</button>
+  </div>
+
   <div class="t mint s6">
     <p class="eyebrow">How I work</p>
     <div class="duo" style="grid-template-columns:1fr 1fr; gap:24px;">
@@ -678,6 +686,135 @@ body:has(dialog[open]){overflow:hidden;}
   </div>
 </dialog>
 
+<dialog class="modal cs-modal" id="crmModal" aria-labelledby="crmTitle">
+  <div class="cs-in" id="crmIn" tabindex="-1">
+    <header class="cs-bar">
+      <div class="cs-now"><small>Practice project</small><b id="crmTitle" aria-live="polite">Overview</b></div>
+      <div class="cs-act">
+        <button class="pill" type="button" data-open-contact>Email me</button>
+        <button class="x-btn" type="button" id="crmClose" aria-label="Close practice project">&times;</button>
+      </div>
+    </header>
+
+    <div class="cs-stage" id="crmStage">
+
+      <section class="cs-slide is-on" data-title="Overview">
+        <div class="cs-grid">
+          <div class="cs-c cs-w cs-blue">
+            <p class="eyebrow">Practice project &middot; fictional data</p>
+            <h1>CRM Practice Simulator</h1>
+            <p style="font-size:17px;max-width:560px">A practice CRM I used to rehearse day-to-day virtual assistant tasks: adding leads, tagging, moving deals, replying to messages, booking appointments and testing automations.</p>
+            <div class="cs-row"><button class="pill y" type="button" data-cs-go="1">Start</button></div>
+          </div>
+          <div class="cs-c cs-t cs-yel"><div class="cs-big">6</div><p>modules practiced, from Dashboard to Automation</p></div>
+          <div class="cs-c cs-t"><div class="cs-big">1</div><p>lead followed from first contact to a booked estimate</p></div>
+          <div class="cs-c cs-t cs-mint"><div class="cs-big">0</div><p>real messages sent. Everything is simulated</p></div>
+          <div class="cs-c cs-w"><p class="eyebrow">In this walkthrough</p><div class="cs-tags"><span class="cs-tag">Video</span><span class="cs-tag">Dashboard</span><span class="cs-tag">Contacts</span><span class="cs-tag">Opportunities</span><span class="cs-tag">Conversations</span><span class="cs-tag">Calendars</span><span class="cs-tag">Automation</span><span class="cs-tag">What I learned</span></div></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Watch the walkthrough" id="crmVideoSlide">
+        <div class="cs-grid"><div class="cs-c cs-w">
+          <p class="eyebrow">Video &middot; 3 min 10 s</p><h2>Watch one lead, start to finish</h2>
+          <div class="cs-media"><video controls playsinline preload="none" poster="assets/crm-simulator/poster.jpg" src="assets/crm-simulator/walkthrough.mp4" aria-label="Screen recording of the CRM practice simulator with on-screen captions"></video></div>
+          <p class="sheetcap" style="font-size:13px;margin:10px 0 0">Screen recording with captions. All data is fictional.</p>
+        </div></div>
+      </section>
+
+      <section class="cs-slide" data-title="Dashboard">
+        <div class="cs-grid">
+          <div class="cs-c">
+            <p class="eyebrow">See the day at a glance</p><h2>Dashboard</h2>
+            <h3>Task</h3><p>Check the day’s workload.</p>
+            <h3>What I did</h3><p>Read the totals for contacts, open deals, appointments and open tasks, then recounted the open tasks after the workflows ran.</p>
+            <h3>Result</h3><p>My recount matched the number on the Dashboard.</p>
+          </div>
+          <div class="cs-c"><div class="cs-media" style="aspect-ratio:16/10;margin-top:0"><img src="assets/crm-simulator/dashboard.jpg" loading="lazy" alt="Simulator Dashboard with totals, pipeline by stage and my tasks"></div><p style="font-size:13px;margin:10px 0 0">Screenshot from the simulator. Sample data.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Contacts">
+        <div class="cs-grid">
+          <div class="cs-c">
+            <p class="eyebrow">Keep every lead in one place</p><h2>Contacts</h2>
+            <h3>Task</h3><p>Set up a new lead, Lena Ortiz.</p>
+            <h3>What I did</h3><p>Added her details, source, project type, budget, start date, owner and tags. Saved a note about when she likes to be called.</p>
+            <h3>Result</h3><p>A complete profile that the welcome workflow tagged and gave a call task.</p>
+          </div>
+          <div class="cs-c"><div class="cs-media" style="aspect-ratio:16/10;margin-top:0"><img src="assets/crm-simulator/contacts.jpg" loading="lazy" alt="Lena Ortiz contact profile in the simulator"></div><p style="font-size:13px;margin:10px 0 0">Screenshot from the simulator. Sample data.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Opportunities">
+        <div class="cs-grid">
+          <div class="cs-c">
+            <p class="eyebrow">Track every deal</p><h2>Opportunities</h2>
+            <h3>Task</h3><p>Track Lena’s kitchen remodel.</p>
+            <h3>What I did</h3><p>Created the $32,000 deal in New Lead, then moved it to Qualified after the first contact.</p>
+            <h3>Result</h3><p>The pipeline totals updated for each stage.</p>
+          </div>
+          <div class="cs-c"><div class="cs-media" style="aspect-ratio:16/10;margin-top:0"><img src="assets/crm-simulator/opps.jpg" loading="lazy" alt="Opportunities board with the Ortiz Kitchen Remodel deal in Qualified"></div><p style="font-size:13px;margin:10px 0 0">Screenshot from the simulator. Sample data.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Conversations">
+        <div class="cs-grid">
+          <div class="cs-c">
+            <p class="eyebrow">Follow up and keep the history</p><h2>Conversations</h2>
+            <h3>Task</h3><p>Confirm the estimate and log Lena’s reply.</p>
+            <h3>What I did</h3><p>Sent the confirmation template (simulated) and added her reply: “Please call me tomorrow afternoon.”</p>
+            <h3>Result</h3><p>The reply created a call-back task automatically.</p>
+          </div>
+          <div class="cs-c"><div class="cs-media" style="aspect-ratio:16/10;margin-top:0"><img src="assets/crm-simulator/convo.jpg" loading="lazy" alt="Conversation with Lena Ortiz in the simulated inbox"></div><p style="font-size:13px;margin:10px 0 0">Screenshot from the simulator. Sample data.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Calendars">
+        <div class="cs-grid">
+          <div class="cs-c">
+            <p class="eyebrow">Book and manage appointments</p><h2>Calendars</h2>
+            <h3>Task</h3><p>Book Lena’s free estimate.</p>
+            <h3>What I did</h3><p>Created the appointment for Saturday at 1:00 PM on the Free Estimates calendar.</p>
+            <h3>Result</h3><p>Booking added an estimate-booked tag and a prep task for the visit.</p>
+          </div>
+          <div class="cs-c"><div class="cs-media" style="aspect-ratio:16/10;margin-top:0"><img src="assets/crm-simulator/calendar.jpg" loading="lazy" alt="Calendar showing the free estimate appointment"></div><p style="font-size:13px;margin:10px 0 0">Screenshot from the simulator. Sample data.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Automation">
+        <div class="cs-grid">
+          <div class="cs-c">
+            <p class="eyebrow">Make follow-up repeatable</p><h2>Automation</h2>
+            <h3>Task</h3><p>Understand what runs on its own.</p>
+            <h3>What I did</h3><p>Tested three workflows with the test runner: new lead welcome, estimate booked and call request.</p>
+            <h3>Result</h3><p>I could trace each tag and task back to the workflow that created it.</p>
+          </div>
+          <div class="cs-c"><div class="cs-media" style="aspect-ratio:16/10;margin-top:0"><img src="assets/crm-simulator/automation.jpg" loading="lazy" alt="New Lead Welcome workflow in the builder"></div><p style="font-size:13px;margin:10px 0 0">Screenshot from the simulator. Sample data.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="What I learned">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">Wrap-up</p><h2>What I learned</h2></div>
+          <div class="cs-c cs-t cs-yel"><h3>Clean data pays off</h3><p>A wrong source or a missing tag skews follow-up and reports, so I check each field before saving.</p></div>
+          <div class="cs-c cs-t"><h3>Tasks keep follow-up on time</h3><p>Every promise to a client becomes a task with a due date, so nothing is forgotten.</p></div>
+          <div class="cs-c cs-t cs-mint"><h3>Automation needs checking</h3><p>I test a workflow first and confirm which tags and tasks it created.</p></div>
+          <div class="cs-c cs-w cs-blue">
+            <p class="eyebrow">Let's talk</p>
+            <p style="font-size:17px;max-width:560px">Need someone who practices carefully and follows through? Let's talk.</p>
+            <div class="cs-row"><button class="pill y" type="button" data-open-contact>Email me</button><button class="pill ghost" type="button" data-cs-go="0">Replay</button></div>
+            <p style="font-size:13px;margin:18px 0 0">Note: This is a simulated practice project with fictional data. It shows how I practice, not client work.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="cs-ctrl"><div class="cs-dots" id="crmDots"></div><span class="cs-count" id="crmCount"></span></div>
+    <button class="cs-ar cs-prev" id="crmPrev" type="button" aria-label="Previous slide">&larr;</button>
+    <button class="cs-ar cs-next" id="crmNext" type="button" aria-label="Next slide">&rarr;</button>
+  </div>
+</dialog>
+
 <script>
 (function(){
   var root = document.documentElement;
@@ -906,18 +1043,18 @@ body:has(dialog[open]){overflow:hidden;}
 })();
 
 /* Case study window (Featured project). If <dialog> is unsupported the button is hidden. */
-(function(){
-  var modal = document.getElementById('csModal');
-  var opener = document.getElementById('csOpen');
+function csInit(P){
+  var modal = document.getElementById(P + 'Modal');
+  var opener = document.getElementById(P + 'Open');
   if(!modal || !opener) return;
   if(typeof modal.showModal !== 'function'){ opener.hidden = true; return; }
 
   var slides = Array.prototype.slice.call(modal.querySelectorAll('.cs-slide'));
-  var dots = document.getElementById('csDots');
-  var titleEl = document.getElementById('csTitle');
-  var countEl = document.getElementById('csCount');
-  var prev = document.getElementById('csPrev');
-  var next = document.getElementById('csNext');
+  var dots = document.getElementById(P + 'Dots');
+  var titleEl = document.getElementById(P + 'Title');
+  var countEl = document.getElementById(P + 'Count');
+  var prev = document.getElementById(P + 'Prev');
+  var next = document.getElementById(P + 'Next');
   var video = modal.querySelector('video');
   var i = 0;
 
@@ -958,7 +1095,7 @@ body:has(dialog[open]){overflow:hidden;}
   });
 
   // Swipe on phones.
-  var stage = document.getElementById('csStage');
+  var stage = document.getElementById(P + 'Stage');
   var tx = null;
   stage.addEventListener('touchstart', function(e){
     tx = (e.target.closest && e.target.closest('video')) ? null : e.touches[0].clientX;
@@ -973,9 +1110,9 @@ body:has(dialog[open]){overflow:hidden;}
   opener.addEventListener('click', function(){
     go(0);
     modal.showModal();
-    document.getElementById('csIn').focus({preventScroll: true});
+    document.getElementById(P + 'In').focus({preventScroll: true});
   });
-  document.getElementById('csClose').addEventListener('click', function(){ modal.close(); });
+  document.getElementById(P + 'Close').addEventListener('click', function(){ modal.close(); });
   modal.addEventListener('click', function(e){ if(e.target === modal) modal.close(); });
 
   // "Email me" buttons carry data-open-contact, so the contact form opens; close this window behind it.
@@ -991,7 +1128,9 @@ body:has(dialog[open]){overflow:hidden;}
   });
 
   go(0);
-})();
+}
+csInit('cs');
+csInit('crm');
 </script>
 </body>
 </html>
