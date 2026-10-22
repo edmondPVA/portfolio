@@ -250,13 +250,13 @@ body:has(dialog[open]){overflow:hidden;}
 .crm-mod{display:grid; grid-template-columns:28px 1fr; gap:10px; align-items:center; border:1px solid var(--line); border-radius:12px; padding:6px 10px; background:var(--tile); transition:background .35s,border-color .35s,transform .35s;}
 .crm-mod svg{width:20px; height:20px; fill:none; stroke:var(--soft); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; transition:stroke .35s;}
 .crm-mod b{display:block; font-size:13px;}
-.crm-mod span{display:block; color:var(--soft); font-size:12px; max-height:0; opacity:0; overflow:hidden; transition:max-height .35s,opacity .35s;}
+.crm-mod span{display:block; color:var(--soft); font-size:12px; line-height:1.35; min-height:2.7em; opacity:0; transition:opacity .35s;}
 .crm-mod.on{background:color-mix(in srgb,var(--yel) 22%,var(--tile)); border-color:var(--yel); transform:translateX(4px);}
 .crm-mod.on svg{stroke:var(--fg);}
-.crm-mod.on span{max-height:20px; opacity:1;}
+.crm-mod.on span{opacity:1;}
 #crmChips .chip{transition:background .35s,color .35s,border-color .35s;}
 #crmChips .chip.on{background:var(--blue); color:#fff; border-color:transparent;}
-@media (max-width:820px){.crm-split{grid-template-columns:minmax(0,1fr);} .crm-mod.on{transform:none;} .crm-mod.on span{max-height:34px;}}
+@media (max-width:820px){.crm-split{grid-template-columns:minmax(0,1fr);} .crm-mod.on{transform:none;}}
 @media (prefers-reduced-motion:reduce){.crm-mod,#crmChips .chip,.crm-mod span{transition:none;}}
 /* Expandable screenshots in the CRM walkthrough */
 #crmModal .cs-media:has(img){position:relative;}
@@ -269,6 +269,22 @@ body:has(dialog[open]){overflow:hidden;}
 .zm img{max-width:100%; max-height:100%; object-fit:contain; border-radius:12px; box-shadow:0 24px 60px rgba(0,0,0,.45);}
 .zm-x{position:absolute; top:max(12px,env(safe-area-inset-top,0px)); right:max(12px,env(safe-area-inset-right,0px)); width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.4); background:rgba(44,62,80,.7); color:#fff; font-size:22px; line-height:1; cursor:pointer;}
 .zm-x:focus-visible,#crmModal .cs-media img:focus-visible{outline:3px solid var(--yel); outline-offset:3px;}
+/* Margin effects: data streams + task checks (wide screens only) */
+.edge{position:fixed; top:0; bottom:0; width:calc((100vw - 1040px) / 2); pointer-events:none; z-index:-1; overflow:hidden; display:none;}
+.edge.l{left:0;} .edge.r{right:0;}
+@media (min-width:1260px){.edge{display:block;}}
+.ed-ln{position:absolute; top:0; bottom:0; width:1px; background:var(--line); opacity:.7;}
+.ed-dot{position:absolute; left:-2px; top:-10px; width:5px; height:5px; border-radius:50%; background:var(--yel); animation:edFall linear infinite;}
+@keyframes edFall{to{transform:translateY(105vh);}}
+.ed-chk{position:absolute; left:20%; top:56%; display:flex; flex-direction:column; gap:12px;}
+.ed-chk div{display:flex; align-items:center; gap:10px;}
+.ed-chk span{width:16px; height:16px; border:1.5px solid var(--soft); border-radius:5px; display:grid; place-items:center; opacity:.55; transition:background .3s,border-color .3s,opacity .3s;}
+.ed-chk span::after{content:""; width:8px; height:4px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg) translate(1px,-1px); opacity:0; transition:opacity .2s;}
+.ed-chk em{display:block; height:5px; border-radius:5px; background:var(--line); opacity:.8; transition:opacity .3s;}
+.ed-chk .done span{background:var(--yel); border-color:var(--yel); opacity:1;}
+.ed-chk .done span::after{opacity:1;}
+.ed-chk .done em{opacity:.35;}
+@media (prefers-reduced-motion:reduce){.ed-dot{display:none;} .ed-chk span,.ed-chk span::after,.ed-chk em{transition:none;}}
 @media (prefers-reduced-motion: reduce){.cs-slide{animation:none;}}
 
 .cs-grid{display:grid; gap:14px; grid-template-columns:repeat(6,minmax(0,1fr));}
@@ -360,6 +376,15 @@ body:has(dialog[open]){overflow:hidden;}
 </head>
 <body>
 
+<div class="edge l" aria-hidden="true">
+  <div class="ed-ln" style="left:30%"><i class="ed-dot" style="animation-duration:9s;animation-delay:-2s"></i><i class="ed-dot" style="animation-duration:9s;animation-delay:-6s"></i></div>
+  <div class="ed-ln" style="left:68%"><i class="ed-dot" style="animation-duration:13s;animation-delay:-4s"></i><i class="ed-dot" style="animation-duration:13s;animation-delay:-10s"></i></div>
+  <div class="ed-chk" id="edChk"><div><span></span><em style="width:54px"></em></div><div><span></span><em style="width:40px"></em></div><div><span></span><em style="width:62px"></em></div><div><span></span><em style="width:46px"></em></div></div>
+</div>
+<div class="edge r" aria-hidden="true">
+  <div class="ed-ln" style="right:30%"><i class="ed-dot" style="animation-duration:11s;animation-delay:-1s"></i><i class="ed-dot" style="animation-duration:11s;animation-delay:-7s"></i></div>
+  <div class="ed-ln" style="right:68%"><i class="ed-dot" style="animation-duration:8s;animation-delay:-3s"></i></div>
+</div>
 <div class="drift" aria-hidden="true">
   <div class="mi dice" style="width:46px;height:46px;left:6%;top:10%;--path:miA;--t:70s;--dl:0s;--d:12s"><div class="in"><svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8"/><circle cx="16" cy="16" r="2.2"/><circle cx="32" cy="16" r="2.2"/><circle cx="24" cy="24" r="2.2"/><circle cx="16" cy="32" r="2.2"/><circle cx="32" cy="32" r="2.2"/></svg></div></div>
   <div class="mi spin amb hide-sm" style="width:40px;height:40px;left:78%;top:8%;--path:miB;--t:64s;--dl:-12s;--d:14s"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="6"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M36.7 11.3l-4.2 4.2M15.5 32.5l-4.2 4.2"/><circle cx="24" cy="24" r="12"/></svg></div></div>
@@ -1162,6 +1187,14 @@ function csInit(P){
 }
 csInit('cs');
 csInit('crm');
+(function(){
+  var rows=[].slice.call(document.querySelectorAll('#edChk div')); if(!rows.length) return;
+  function paint(k){rows.forEach(function(r,i){r.classList.toggle('done',i<k)})}
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){paint(3);return}
+  var n=0; paint(0);
+  setInterval(function(){ if(document.hidden||innerWidth<1260) return; n=(n+1)%7; paint(n>4?4:n); },1100);
+})();
+
 (function(){
   var crm=document.getElementById('crmModal'), zm=document.getElementById('shotModal');
   if(!crm||!zm||typeof zm.showModal!=='function') return;
