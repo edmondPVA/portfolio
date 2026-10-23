@@ -325,7 +325,14 @@
     if (!state.skills.length) box.appendChild(el('div', 't empty', 'No skills yet. Add your first one below.'));
     groupNames().forEach(function (g) {
       var card = el('div', 't sk-group');
-      card.appendChild(el('h2', null, g));
+      var head = el('div', 'sk-head');
+      head.appendChild(el('h2', null, g));
+      var rg = el('button', 'pill ghost small', 'Remove group');
+      rg.type = 'button';
+      rg.setAttribute('aria-label', 'Remove the group ' + g + ' and all its skills');
+      rg.addEventListener('click', function () { removeGroup(g); });
+      head.appendChild(rg);
+      card.appendChild(head);
       var chips = el('div', 'sk-chips');
       state.skills.filter(function (r) { return r.group_name === g; }).forEach(function (r) {
         var c = el('span', 'sk-chip', r.name);
@@ -361,6 +368,21 @@
         renderSkills();
         toast('Skill removed', 'ok');
       }).catch(function (err) { fail(err, 'Could not remove the skill.'); });
+    });
+  }
+  function removeGroup(g) {
+    var rows = state.skills.filter(function (r) { return r.group_name === g; });
+    if (!rows.length) return;
+    var n = rows.length;
+    confirmBox('Remove the group “' + g + '”?', 'This removes the group and its ' + n + (n === 1 ? ' skill' : ' skills') + ' from your portfolio. This cannot be undone.', 'Remove group').then(function (yes) {
+      if (!yes) return;
+      Promise.all(rows.map(function (r) { return API.deleteRow('skills', r.id).then(function () { return r.id; }, function () { return null; }); })).then(function (ids) {
+        var gone = ids.filter(Boolean);
+        state.skills = state.skills.filter(function (x) { return gone.indexOf(x.id) === -1; });
+        renderSkills();
+        if (gone.length === rows.length) toast('Group removed', 'ok');
+        else fail(null, 'Some skills in this group could not be removed. Try again.');
+      });
     });
   }
   function addSkill(ev) {
