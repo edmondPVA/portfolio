@@ -31,8 +31,8 @@
     <nav aria-label="Sections">
       <button class="nav-item" type="button" data-view="overview">Overview</button>
       <button class="nav-item" type="button" data-view="messages">Messages <span class="badge" id="unreadBadge" hidden>0</span></button>
-      <button class="nav-item" type="button" data-view="skills">Skills <span class="soon-tag">Soon</span></button>
-      <button class="nav-item" type="button" data-view="experience">Work Experience <span class="soon-tag">Soon</span></button>
+      <button class="nav-item" type="button" data-view="skills">Skills</button>
+      <button class="nav-item" type="button" data-view="experience">Work Experience</button>
       <button class="nav-item" type="button" data-view="projects">Projects <span class="soon-tag">Soon</span></button>
       <button class="nav-item" type="button" data-view="profile">Profile / About Me <span class="soon-tag">Soon</span></button>
       <button class="nav-item" type="button" data-view="media">Photo / Media Manager <span class="soon-tag">Soon</span></button>
@@ -80,6 +80,26 @@
         </div>
         <article class="t mdetail" id="mdetail"></article>
       </div>
+    </section>
+
+    <section id="view-skills" aria-labelledby="h-skills" hidden>
+      <div class="page-head"><h1 id="h-skills">Skills</h1></div>
+      <p class="muted lead">These are the tools and platforms on your portfolio, grouped. Changes show on the live page right after you add or remove one.</p>
+      <div id="skillGroups" class="stack"></div>
+      <form class="t addbar" id="skillForm" autocomplete="off">
+        <h2>Add a skill</h2>
+        <div class="two">
+          <div class="field"><label for="skName">Name</label><input id="skName" maxlength="80" required placeholder="For example, Google Calendar"></div>
+          <div class="field"><label for="skGroup">Group</label><input id="skGroup" maxlength="60" required list="skGroupList" placeholder="Pick one or type a new group"><datalist id="skGroupList"></datalist></div>
+        </div>
+        <button class="pill" type="submit" id="skAdd">Add skill</button>
+      </form>
+    </section>
+
+    <section id="view-experience" aria-labelledby="h-experience" hidden>
+      <div class="page-head"><h1 id="h-experience">Work Experience</h1><button class="pill small" type="button" id="expAdd">Add role</button></div>
+      <p class="muted lead">Both dates are optional. Tick “Currently working here” to show Present. Write one point per line under “What I did”; each line becomes a bullet on your portfolio.</p>
+      <div id="expList" class="stack"></div>
     </section>
 
     <section id="view-soon" hidden>

@@ -1207,6 +1207,43 @@ function csInit(P){
 }
 csInit('cs');
 csInit('crm');
+/* Skills and work experience come from the admin dashboard (Supabase). If they cannot be loaded, the content already on the page stays. */
+(function(){
+  var c=window.PORTFOLIO_SUPABASE; if(!c||!window.fetch) return;
+  function get(t,order){
+    var ctl=window.AbortController?new AbortController():null, to=setTimeout(function(){if(ctl)ctl.abort();},6000);
+    return fetch(c.url+'/rest/v1/'+t+'?select=*&visible=eq.true&order='+order,{headers:{apikey:c.key,Accept:'application/json'},signal:ctl?ctl.signal:undefined,referrerPolicy:'no-referrer'})
+      .then(function(r){clearTimeout(to);return r.ok?r.json():[];}).catch(function(){clearTimeout(to);return [];});
+  }
+  function mk(tag,cls,txt){var n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n;}
+  get('skills','sort_order.asc,created_at.asc').then(function(rows){
+    var box=document.getElementById('tools'); if(!box||!Array.isArray(rows)||!rows.length) return;
+    var eb=box.querySelector('.eyebrow'); while(eb.nextSibling) box.removeChild(eb.nextSibling);
+    var groups=[],map={};
+    rows.forEach(function(r){if(!map[r.group_name]){map[r.group_name]=[];groups.push(r.group_name);}map[r.group_name].push(r.name);});
+    groups.forEach(function(g,i){
+      box.appendChild(mk('p','grp',g));
+      var w=mk('div','chips'); if(i===groups.length-1) w.style.marginBottom='0';
+      map[g].forEach(function(n){w.appendChild(mk('span','chip',n));});
+      box.appendChild(w);
+    });
+  });
+  get('experience','sort_order.asc,created_at.asc').then(function(rows){
+    var box=document.getElementById('work'); if(!box||!Array.isArray(rows)||!rows.length) return;
+    var eb=box.querySelector('.eyebrow'); while(eb.nextSibling) box.removeChild(eb.nextSibling);
+    rows.forEach(function(r){
+      var end=r.is_current?'Present':(r.end_label||''), st=r.start_label||'';
+      var when=(st&&end)?st+' to '+end:(st||end);
+      var job=mk('div','job'); job.appendChild(mk('div','when',when.toUpperCase()));
+      var body=mk('div'); body.appendChild(mk('h3','',r.role));
+      if(r.company) body.appendChild(mk('div','co',r.company));
+      var lines=String(r.bullets||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);
+      if(lines.length){var ul=mk('ul');lines.forEach(function(l){ul.appendChild(mk('li','',l));});body.appendChild(ul);}
+      job.appendChild(body); box.appendChild(job);
+    });
+  });
+})();
+
 (function(){
   var fine=window.matchMedia&&window.matchMedia('(pointer:fine)').matches;
   var still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;

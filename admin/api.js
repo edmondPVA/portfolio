@@ -215,6 +215,55 @@
   function setRead(id, isRead) { return mutate('PATCH', id, { is_read: !!isRead }); }
   function deleteMessage(id) { return mutate('DELETE', id); }
 
+
+  /* ---------- skills and work experience (Phase 3) ---------- */
+  var TABLES = {
+    skills:     { cols: 'id,group_name,name,sort_order,visible', order: 'sort_order.asc,created_at.asc' },
+    experience: { cols: 'id,role,company,start_label,end_label,is_current,bullets,sort_order,visible', order: 'sort_order.asc,created_at.asc' }
+  };
+  function tableErr(res) {
+    if (res.status === 404) {
+      return fail('setup', 'This section is not set up yet. Run supabase/phase3-skills-experience.sql in the Supabase SQL editor.', 404);
+    }
+    return httpError(res);
+  }
+  function listRows(table) {
+    var t = TABLES[table];
+    if (!t) return Promise.reject(fail('http', 'Unknown table.'));
+    return authed('/rest/v1/' + table + '?select=' + t.cols + '&order=' + t.order + '&limit=500').then(function (res) {
+      return parse(res).then(function (d) {
+        if (!res.ok) throw tableErr(res);
+        return Array.isArray(d) ? d : [];
+      });
+    });
+  }
+  function saveRow(table, id, fields) {
+    var t = TABLES[table];
+    if (!t) return Promise.reject(fail('http', 'Unknown table.'));
+    var isNew = !id;
+    if (!isNew && !UUID.test(String(id))) return Promise.reject(fail('http', 'Invalid id.'));
+    var path = '/rest/v1/' + table + (isNew ? '' : '?id=eq.' + id) + (isNew ? '?select=' : '&select=') + t.cols;
+    return authed(path, { method: isNew ? 'POST' : 'PATCH', body: fields, prefer: 'return=representation' }).then(function (res) {
+      return parse(res).then(function (d) {
+        if (!res.ok) throw tableErr(res);
+        if (!Array.isArray(d) || d.length === 0) {
+          throw fail('notfound', 'Nothing was saved. This account may not be authorized.');
+        }
+        return d[0];
+      });
+    });
+  }
+  function deleteRow(table, id) {
+    if (!TABLES[table] || !UUID.test(String(id))) return Promise.reject(fail('http', 'Invalid request.'));
+    return authed('/rest/v1/' + table + '?id=eq.' + id + '&select=id', { method: 'DELETE', prefer: 'return=representation' }).then(function (res) {
+      return parse(res).then(function (d) {
+        if (!res.ok) throw tableErr(res);
+        if (!Array.isArray(d) || d.length === 0) throw fail('notfound', 'Nothing was deleted. It may already be gone.');
+        return true;
+      });
+    });
+  }
+
   window.AdminAPI = {
     signIn: signIn,
     signOut: signOut,
@@ -223,6 +272,9 @@
     onSignedOut: onSignedOut,
     listMessages: listMessages,
     setRead: setRead,
-    deleteMessage: deleteMessage
+    deleteMessage: deleteMessage,
+    listRows: listRows,
+    saveRow: saveRow,
+    deleteRow: deleteRow
   };
 })();

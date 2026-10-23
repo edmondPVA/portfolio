@@ -186,3 +186,26 @@ dialog.dlg .acts{justify-content:flex-end;}
   .mlist{max-height:none;}
 }
 @media (prefers-reduced-motion: reduce){.side{transition:none;}}
+
+/* skills + experience managers */
+.lead{max-width:62ch; margin:0 0 16px;}
+.stack{display:flex; flex-direction:column; gap:14px; margin-bottom:14px;}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.two > *{min-width:0;}
+.sk-group h2{font-size:16px; margin-bottom:10px;}
+.sk-chips{display:flex; flex-wrap:wrap; gap:8px;}
+.sk-chip{display:inline-flex; align-items:center; gap:6px; background:var(--page); border:1px solid var(--line); border-radius:999px; padding:4px 5px 4px 12px; font-size:14px;}
+.sk-chip button{width:24px; height:24px; border-radius:50%; border:0; background:var(--tile); color:var(--fg); cursor:pointer; font-size:16px; line-height:1;}
+.sk-chip button:hover{background:var(--err-bg); color:var(--err-fg);}
+.addbar h2{font-size:16px; margin-bottom:12px;}
+.exp-card{display:flex; flex-direction:column; gap:2px;}
+.exp-card.hidden-role{opacity:.7;}
+.exp-card textarea.inp{min-height:130px; resize:vertical; line-height:1.5;}
+.field .hint,.exp-card .hint{font-size:12.5px; color:var(--soft); margin:2px 0 10px;}
+.exp-card .sw{display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:500; margin:2px 16px 8px 0; cursor:pointer;}
+.exp-card .sw input{accent-color:var(--blue); width:17px; height:17px;}
+.exp-card .head-row{display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:10px; flex-wrap:wrap;}
+.exp-card .head-row b{font-family:'Sora',sans-serif; font-size:15px; overflow-wrap:anywhere;}
+.exp-card .acts{margin-top:8px;}
+.exp-card .acts .grow{flex:1;}
+@media (max-width:640px){.two{grid-template-columns:1fr;}}

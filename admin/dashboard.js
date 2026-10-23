@@ -5,18 +5,16 @@
   var HOME = '../';                 // the portfolio, where the sign-in modal lives
   var LOGIN = HOME + '?signin=1';
 
-  var state = { messages: [], loaded: false, loading: false, loadError: '', selectedId: null, view: 'overview' };
+  var state = { skills: [], skillsLoaded: false, exp: [], expLoaded: false, messages: [], loaded: false, loading: false, loadError: '', selectedId: null, view: 'overview' };
   var bound = false;
 
   var SOON = {
-    skills:     ['Skills', 'Skills manager', 'Add, edit, reorder, and show or hide your skills. The public portfolio will update automatically, with no HTML editing.'],
-    experience: ['Work Experience', 'Work experience manager', 'Edit your roles, dates, responsibilities and achievements, and choose what shows publicly.'],
     projects:   ['Projects', 'Projects manager', 'Add projects with links and screenshots, and control their order and visibility.'],
     profile:    ['Profile / About Me', 'Profile editor', 'Update your name, headline, About Me text, profile photo and public contact links.'],
     media:      ['Photo / Media Manager', 'Proof-of-work photos', 'Upload and organize proof-of-work photos. Blur or crop any confidential client or employer details before uploading.'],
     settings:   ['Settings', 'Settings', 'Account and site settings will live here.']
   };
-  var VIEWS = ['overview', 'messages'].concat(Object.keys(SOON));
+  var VIEWS = ['overview', 'messages', 'skills', 'experience'].concat(Object.keys(SOON));
 
   /* Only simple, safe-looking addresses become mailto: links. */
   var SAFE_EMAIL = /^[^\s@<>?&,;:"'%]+@[^\s@<>?&,;:"'%]+\.[^\s@<>?&,;:"'%]+$/;
@@ -288,6 +286,243 @@
     if (m && !m.is_read) setRead(m, true, true);
   }
 
+
+  /* ---------- generic confirm ---------- */
+  function confirmBox(title, text, okLabel) {
+    var dlg = $('confirmDlg');
+    $('dlgTitle').textContent = title;
+    $('dlgText').textContent = text;
+    $('dlgOk').textContent = okLabel || 'Delete';
+    return new Promise(function (resolve) {
+      var result = false;
+      function done() { dlg.removeEventListener('close', done); resolve(result); }
+      dlg.addEventListener('close', done);
+      $('dlgOk').onclick = function () { result = true; dlg.close(); };
+      $('dlgCancel').onclick = function () { dlg.close(); };
+      dlg.showModal();
+    });
+  }
+  function fail(err, fallback) {
+    if (err && err.kind === 'auth') return;
+    toast((err && err.message) || fallback, 'err');
+  }
+
+  /* ---------- skills ---------- */
+  function groupNames() {
+    var seen = [];
+    state.skills.forEach(function (r) { if (seen.indexOf(r.group_name) === -1) seen.push(r.group_name); });
+    return seen;
+  }
+  function renderSkills() {
+    var box = $('skillGroups');
+    clear(box);
+    if (state.skillsError) {
+      var e = el('div', 't empty', state.skillsError);
+      box.appendChild(e);
+      return;
+    }
+    if (!state.skillsLoaded) { box.appendChild(el('div', 't empty', 'Loading skills…')); return; }
+    if (!state.skills.length) box.appendChild(el('div', 't empty', 'No skills yet. Add your first one below.'));
+    groupNames().forEach(function (g) {
+      var card = el('div', 't sk-group');
+      card.appendChild(el('h2', null, g));
+      var chips = el('div', 'sk-chips');
+      state.skills.filter(function (r) { return r.group_name === g; }).forEach(function (r) {
+        var c = el('span', 'sk-chip', r.name);
+        var x = el('button', null, '×');
+        x.type = 'button';
+        x.setAttribute('aria-label', 'Remove ' + r.name);
+        x.addEventListener('click', function () { removeSkill(r); });
+        c.appendChild(x);
+        chips.appendChild(c);
+      });
+      card.appendChild(chips);
+      box.appendChild(card);
+    });
+    var dl = $('skGroupList');
+    clear(dl);
+    groupNames().forEach(function (g) { var o = document.createElement('option'); o.value = g; dl.appendChild(o); });
+  }
+  function loadSkills() {
+    state.skillsError = '';
+    renderSkills();
+    return API.listRows('skills').then(function (rows) {
+      state.skills = rows; state.skillsLoaded = true;
+    }).catch(function (err) {
+      if (err && err.kind === 'auth') return;
+      state.skillsError = (err && err.message) || 'Could not load skills.';
+    }).then(renderSkills);
+  }
+  function removeSkill(r) {
+    confirmBox('Remove this skill?', '“' + r.name + '” will disappear from your portfolio.', 'Remove').then(function (yes) {
+      if (!yes) return;
+      API.deleteRow('skills', r.id).then(function () {
+        state.skills = state.skills.filter(function (x) { return x.id !== r.id; });
+        renderSkills();
+        toast('Skill removed', 'ok');
+      }).catch(function (err) { fail(err, 'Could not remove the skill.'); });
+    });
+  }
+  function addSkill(ev) {
+    ev.preventDefault();
+    var name = $('skName').value.trim(), group = $('skGroup').value.trim();
+    if (!name || !group) return;
+    var max = state.skills.reduce(function (m, r) { return Math.max(m, r.sort_order); }, 0);
+    var btn = $('skAdd');
+    btn.disabled = true;
+    API.saveRow('skills', null, { name: name, group_name: group, sort_order: max + 1, visible: true }).then(function (row) {
+      state.skills.push(row);
+      $('skName').value = '';
+      renderSkills();
+      toast('Skill added', 'ok');
+    }).catch(function (err) { fail(err, 'Could not add the skill.'); }).then(function () { btn.disabled = false; });
+  }
+
+  /* ---------- work experience ---------- */
+  function loadExp() {
+    state.expError = '';
+    renderExp();
+    return API.listRows('experience').then(function (rows) {
+      state.exp = rows; state.expLoaded = true;
+    }).catch(function (err) {
+      if (err && err.kind === 'auth') return;
+      state.expError = (err && err.message) || 'Could not load work experience.';
+    }).then(renderExp);
+  }
+  function field(label, id, value, opts) {
+    var f = el('div', 'field');
+    var l = el('label', null, label);
+    l.setAttribute('for', id);
+    f.appendChild(l);
+    var i = document.createElement(opts && opts.area ? 'textarea' : 'input');
+    i.id = id; i.className = 'inp'; i.value = value || '';
+    if (opts && opts.max) i.maxLength = opts.max;
+    if (opts && opts.ph) i.placeholder = opts.ph;
+    if (opts && opts.rows) i.rows = opts.rows;
+    f.appendChild(i);
+    return { wrap: f, input: i };
+  }
+  function check(label, checked) {
+    var w = el('label', 'sw');
+    var c = document.createElement('input');
+    c.type = 'checkbox'; c.checked = !!checked;
+    w.appendChild(c);
+    w.appendChild(document.createTextNode(label));
+    return { wrap: w, input: c };
+  }
+  function roleCard(r, idx, total) {
+    var key = r.id || 'new';
+    var card = el('div', 't exp-card' + (r.visible === false ? ' hidden-role' : ''));
+    var head = el('div', 'head-row');
+    head.appendChild(el('b', null, r.role || 'New role'));
+    card.appendChild(head);
+
+    var role = field('Role', 'r-role-' + key, r.role, { max: 150 });
+    var co = field('Company', 'r-co-' + key, r.company, { max: 150 });
+    var two0 = el('div', 'two'); two0.appendChild(role.wrap); two0.appendChild(co.wrap);
+    card.appendChild(two0);
+
+    var st = field('Start (optional)', 'r-st-' + key, r.start_label, { max: 30, ph: 'For example, Sept 2024' });
+    var en = field('End (optional)', 'r-en-' + key, r.end_label, { max: 30, ph: 'Leave blank if you do not want an end date' });
+    var two1 = el('div', 'two'); two1.appendChild(st.wrap); two1.appendChild(en.wrap);
+    card.appendChild(two1);
+    var cur = check('Currently working here (shows “Present”)', r.is_current);
+    card.appendChild(cur.wrap);
+
+    var bl = field('What I did (one point per line)', 'r-bl-' + key, r.bullets, { area: true, max: 4000, rows: 6 });
+    card.appendChild(bl.wrap);
+
+    var vis = check('Show on portfolio', r.visible !== false);
+    card.appendChild(vis.wrap);
+
+    var acts = el('div', 'acts');
+    var save = el('button', 'pill small', r.id ? 'Save changes' : 'Add role');
+    save.type = 'button';
+    save.addEventListener('click', function () {
+      var role = $('r-role-' + key).value.trim();
+      if (!role) { toast('Add a role title first.', 'err'); $('r-role-' + key).focus(); return; }
+      var fields = {
+        role: role,
+        company: $('r-co-' + key).value.trim(),
+        start_label: $('r-st-' + key).value.trim(),
+        end_label: $('r-en-' + key).value.trim(),
+        is_current: cur.input.checked,
+        bullets: $('r-bl-' + key).value.replace(/\r/g, '').split('\n').map(function (x) { return x.trim(); }).filter(Boolean).join('\n'),
+        visible: vis.input.checked
+      };
+      saveRole(r, fields, save);
+    });
+    acts.appendChild(save);
+    if (r.id) {
+      var up = el('button', 'pill ghost small', 'Move up');
+      up.type = 'button'; up.disabled = idx === 0;
+      up.addEventListener('click', function () { moveRole(idx, -1); });
+      var dn = el('button', 'pill ghost small', 'Move down');
+      dn.type = 'button'; dn.disabled = idx === total - 1;
+      dn.addEventListener('click', function () { moveRole(idx, 1); });
+      acts.appendChild(up); acts.appendChild(dn);
+      acts.appendChild(el('span', 'grow'));
+      var del = el('button', 'pill danger small', 'Delete');
+      del.type = 'button';
+      del.addEventListener('click', function () { removeRole(r); });
+      acts.appendChild(del);
+    } else {
+      var cancel = el('button', 'pill ghost small', 'Cancel');
+      cancel.type = 'button';
+      cancel.addEventListener('click', function () { state.draft = null; renderExp(); });
+      acts.appendChild(cancel);
+    }
+    card.appendChild(acts);
+    return card;
+  }
+  function renderExp() {
+    var box = $('expList');
+    clear(box);
+    if (state.expError) { box.appendChild(el('div', 't empty', state.expError)); return; }
+    if (!state.expLoaded) { box.appendChild(el('div', 't empty', 'Loading work experience…')); return; }
+    if (state.draft) box.appendChild(roleCard(state.draft, -1, 0));
+    if (!state.exp.length && !state.draft) box.appendChild(el('div', 't empty', 'No roles yet. Use “Add role” to create the first one.'));
+    state.exp.forEach(function (r, i) { box.appendChild(roleCard(r, i, state.exp.length)); });
+  }
+  function saveRole(r, fields, btn) {
+    btn.disabled = true;
+    if (!r.id) {
+      var min = state.exp.reduce(function (m, x) { return Math.min(m, x.sort_order); }, 1);
+      fields.sort_order = min - 1;
+    }
+    API.saveRow('experience', r.id || null, fields).then(function (row) {
+      if (r.id) {
+        state.exp = state.exp.map(function (x) { return x.id === row.id ? row : x; });
+      } else {
+        state.exp.unshift(row); state.draft = null;
+      }
+      renderExp();
+      toast('Saved. Your portfolio will show the change.', 'ok');
+    }).catch(function (err) { btn.disabled = false; fail(err, 'Could not save the role.'); });
+  }
+  function moveRole(i, dir) {
+    var a = state.exp[i], b = state.exp[i + dir];
+    if (!a || !b) return;
+    var ao = a.sort_order, bo = b.sort_order;
+    if (ao === bo) { bo = ao + dir; }
+    Promise.all([API.saveRow('experience', a.id, { sort_order: bo }), API.saveRow('experience', b.id, { sort_order: ao })]).then(function (rows) {
+      state.exp[i] = rows[0]; state.exp[i + dir] = rows[1];
+      state.exp.sort(function (x, y) { return x.sort_order - y.sort_order; });
+      renderExp();
+      toast('Order updated', 'ok');
+    }).catch(function (err) { fail(err, 'Could not change the order.'); loadExp(); });
+  }
+  function removeRole(r) {
+    confirmBox('Delete this role?', '“' + r.role + '” will be removed from your portfolio. This cannot be undone.', 'Delete').then(function (yes) {
+      if (!yes) return;
+      API.deleteRow('experience', r.id).then(function () {
+        state.exp = state.exp.filter(function (x) { return x.id !== r.id; });
+        renderExp();
+        toast('Role deleted', 'ok');
+      }).catch(function (err) { fail(err, 'Could not delete the role.'); });
+    });
+  }
+
   /* ---------- navigation ---------- */
   function closeMenu() {
     $('side').classList.remove('open');
@@ -305,7 +540,11 @@
     state.view = view;
     $('view-overview').hidden = view !== 'overview';
     $('view-messages').hidden = view !== 'messages';
+    $('view-skills').hidden = view !== 'skills';
+    $('view-experience').hidden = view !== 'experience';
     $('view-soon').hidden = !SOON[view];
+    if (view === 'skills' && !state.skillsLoaded) loadSkills();
+    if (view === 'experience' && !state.expLoaded) loadExp();
     if (SOON[view]) {
       $('soonTitle').textContent = SOON[view][0];
       $('soonHead').textContent = SOON[view][1];
@@ -341,6 +580,14 @@
     }
     $('mlist').addEventListener('click', onPick);
     $('recent').addEventListener('click', onPick);
+
+    $('skillForm').addEventListener('submit', addSkill);
+    $('expAdd').addEventListener('click', function () {
+      if (!state.expLoaded) { toast('Still loading. Try again in a moment.', 'err'); return; }
+      state.draft = { role: '', company: '', start_label: '', end_label: '', is_current: false, bullets: '', visible: true };
+      renderExp();
+      var f = $('r-role-new'); if (f) f.focus();
+    });
 
     $('search').addEventListener('input', renderList);
     $('filter').addEventListener('change', renderList);
