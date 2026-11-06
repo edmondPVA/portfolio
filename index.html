@@ -385,9 +385,61 @@ body:has(dialog[open]){overflow:hidden;}
   .frow{grid-template-columns:1fr; gap:0;}
   .modal-in{padding:20px;}
 }
+
+/* Pages: home (two doors), Virtual Assistant, Quality Assurance. One index.html, switched by the URL hash (#va, #qa). */
+body[data-view="home"] .bento>[data-v]:not([data-v~="home"]),
+body[data-view="va"] .bento>[data-v]:not([data-v~="va"]),
+body[data-view="qa"] .bento>[data-v]:not([data-v~="qa"]){display:none;}
+.t[hidden]{display:none;}
+.t{padding:30px 32px;}
+.hero.path h1{font-size:clamp(28px,4.6vw,48px); line-height:1.08; letter-spacing:-.02em; max-width:18ch;}
+.door{display:flex; flex-direction:column; gap:14px; min-height:300px; text-decoration:none;}
+.door h2{font-size:28px; letter-spacing:-.01em; margin:0;}
+.door p{margin:0; max-width:40ch;}
+.door ul{margin:0; padding-left:18px; display:grid; gap:4px; font-size:15px;}
+.door .door-go{margin-top:auto; align-self:flex-start;}
+.t.blue .door-go{background:var(--blue-fg); color:var(--blue);}
+.t.yel .door-go{background:var(--yel-fg); color:var(--yel);}
+.door:focus-visible{outline:3px solid var(--fg); outline-offset:3px;}
+.nextrow .acts{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;}
+.nextrow .pill.ghost{color:var(--fg);}
+.t.blue .chip,.t.yel .chip{background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.35); color:inherit;}
+.t.yel .chip{background:rgba(44,62,80,.10); border-color:rgba(44,62,80,.3);}
+body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
+.nav .links a[aria-current="page"]{color:var(--fg); font-weight:700;}
+.bar{display:none;}
+.totop{position:fixed; right:calc(16px + env(safe-area-inset-right,0px)); bottom:calc(16px + env(safe-area-inset-bottom,0px)); z-index:12; width:46px; height:46px; border-radius:50%; background:var(--blue); color:var(--blue-fg); border:2px solid var(--page); display:grid; place-items:center; cursor:pointer;}
+.totop svg{width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2.5;}
+.totop[hidden]{display:none;}
+@media (max-width:760px){
+  .t{padding:24px;}
+  .door{min-height:0;}
+  .bar{display:flex; position:fixed; left:0; right:0; bottom:0; z-index:11; background:var(--tile); border-top:1px solid var(--line); padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));}
+  .bar a{flex:1; padding:10px 4px; text-align:center; text-decoration:none; font-size:12.5px; font-weight:700; color:var(--soft); border-radius:10px; line-height:1.25;}
+  .bar a[aria-current="page"]{color:var(--fg); background:var(--page);}
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));}
+  .totop{bottom:calc(80px + env(safe-area-inset-bottom,0px));}
+}
+
+/* Home: "By the numbers" tile */
+.score{display:flex; flex-direction:column;}
+.score .eyebrow{margin-bottom:6px;}
+.srows{flex:1; display:flex; flex-direction:column; justify-content:space-between;}
+.sr{display:grid; grid-template-columns:48px 1fr; gap:16px; align-items:center; padding:12px 0; border-top:1px solid var(--line);}
+.sr:first-child{border-top:0;}
+.sr b{display:block; font-family:'Sora',sans-serif; font-size:clamp(28px,3.4vw,36px); line-height:1.05; font-weight:800; letter-spacing:-.02em;}
+.sr>div>span{display:block; font-size:14px; line-height:1.4; color:var(--soft); margin-top:2px;}
+.sic{width:48px; height:48px; border-radius:14px; background:var(--yel); color:var(--yel-fg); display:grid; place-items:center;}
+.sic svg{width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+.sic.ring{background:transparent;}
+.sic.ring svg{width:48px; height:48px; transform:rotate(-90deg); stroke-width:5;}
+.sic.ring .trk{stroke:var(--line);}
+.sic.ring .val{stroke:var(--yel); stroke-dasharray:113.1; stroke-dashoffset:5.7; animation:ringfill 1.1s ease-out both;}
+@keyframes ringfill{from{stroke-dashoffset:113.1;}}
+@media (prefers-reduced-motion:reduce){.sic.ring .val{animation:none;}}
 </style>
 </head>
-<body>
+<body data-view="home">
 
 <div class="edge l" aria-hidden="true">
   <div class="ed-ln" style="left:30%"><i class="ed-dot" style="animation-duration:9s;animation-delay:-2s"></i><i class="ed-dot" style="animation-duration:9s;animation-delay:-6s"></i></div>
@@ -420,8 +472,8 @@ body:has(dialog[open]){overflow:hidden;}
   <div class="mi spin amb hide-sm" style="width:40px;height:40px;left:60%;top:38%;--path:miC;--t:84s;--dl:-33s;--d:14s"><div class="in"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="6"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11.3 11.3l4.2 4.2M32.5 32.5l4.2 4.2M36.7 11.3l-4.2 4.2M15.5 32.5l-4.2 4.2"/><circle cx="24" cy="24" r="12"/></svg></div></div>
 </div>
 <nav class="nav"><div class="nav-in">
-  <a class="brand" href="#" aria-label="Edmond Polinar, home"><img src="favicon.svg" alt="" width="34" height="34"><b>Edmond Polinar</b></a>
-  <div class="links"><a href="#services">Services</a><a href="#work">Work</a><a href="#tools">Tools</a><a href="#contact">Contact</a></div>
+  <a class="brand" href="#home" aria-label="Edmond Polinar, home"><img src="favicon.svg" alt="" width="34" height="34"><b>Edmond Polinar</b></a>
+  <div class="links"><a href="#qa" data-nav="qa">Quality Assurance</a><a href="#va" data-nav="va">Virtual Assistant</a><a href="#contact">Contact</a></div>
   <div style="display:flex; gap:8px; align-items:center;">
     <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode"><span class="dot"></span><span id="themeLabel">Dark</span></button>
     <a class="pill" href="mailto:edmondpolinar@gmail.com" data-open-contact>Email me</a>
@@ -431,34 +483,84 @@ body:has(dialog[open]){overflow:hidden;}
 <main class="wrap">
 <div class="bento">
 
-  <div class="t blue hero s4 r2">
+  <div class="t blue hero s4 r2" data-v="home">
     <div>
       <p class="eyebrow">Quality Assurance · Data entry · Support · Virtual Assistant</p>
       <h1>Edmond<br>Polinar</h1>
       <p>I keep your data accurate, your records organized, and your customers taken care of, with a quality tester's eye for the details others miss.</p>
     </div>
-    <div class="acts"><a class="pill" href="mailto:edmondpolinar@gmail.com" data-open-contact>Email me</a><a class="pill ghost" href="#work">See my experiences</a></div>
+    <div class="acts"><a class="pill" href="mailto:edmondpolinar@gmail.com" data-open-contact>Email me</a><a class="pill ghost" href="#paths">Choose a page</a></div>
   </div>
 
-  <div class="t stat s2 ink"><div class="num">2+ yrs</div><div class="cap">Quality Assurance, support &amp; admin work</div></div>
-  <div class="t stat s2 yel"><div class="num">100+</div><div class="cap">bugs and defects caught and documented</div></div>
+  <div class="t blue hero path s4 r2" data-v="va">
+    <div>
+      <p class="eyebrow">Virtual Assistant</p>
+      <h1>I keep your data accurate and your daily work moving.</h1>
+      <p>Data entry, records, documents, and automations that remove repeat typing, so you can focus on higher-priority tasks.</p>
+    </div>
+    <div class="acts"><a class="pill" href="mailto:edmondpolinar@gmail.com" data-open-contact>Email me</a><a class="pill ghost" href="#qa">See Quality Assurance</a></div>
+  </div>
 
-  <div class="t s4" id="about">
+  <div class="t blue hero path s4 r2" data-v="qa">
+    <div>
+      <p class="eyebrow">Quality Assurance</p>
+      <h1>I find the bugs before your customers do.</h1>
+      <p>Manual functional, regression, and exploratory testing with clear, reproducible bug reports. 1000+ test cases written and maintained.</p>
+    </div>
+    <div class="acts"><a class="pill" href="mailto:edmondpolinar@gmail.com" data-open-contact>Email me</a><a class="pill ghost" href="#va">See Virtual Assistant</a></div>
+  </div>
+
+  <div class="t stat s2 ink" data-v="va qa"><div class="num">2+ yrs</div><div class="cap">Quality Assurance, support &amp; admin work</div></div>
+  <div class="t stat s2 yel" data-v="qa"><div class="num">100+</div><div class="cap">bugs and defects caught and documented</div></div>
+  <div class="t stat s2 yel" data-v="va"><div class="num">1000+</div><div class="cap">test cases documented and kept organized</div></div>
+
+  <div class="t score s2 r2" data-v="home">
+    <p class="eyebrow">By the numbers</p>
+    <div class="srows">
+      <div class="sr"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div><b>2+ yrs</b><span>Quality Assurance, support &amp; admin work</span></div></div>
+      <div class="sr"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5L7.5 11M3.5 18l1.5 1.5L7.5 17"/></svg></span><div><b>1000+</b><span>test cases documented and maintained</span></div></div>
+      <div class="sr"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="8" width="10" height="12" rx="5"/><path d="M9.5 8V7a2.5 2.5 0 015 0v1M12 11v9M3 13h4M17 13h4M4 7l3 2M20 7l-3 2M4 20l3-2M20 20l-3-2"/></svg></span><div><b>100+</b><span>bugs and defects caught and documented</span></div></div>
+      <div class="sr"><span class="sic ring"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="trk" cx="22" cy="22" r="18"/><circle class="val" cx="22" cy="22" r="18"/></svg></span><div><b>95%</b><span>QA score in support</span></div></div>
+    </div>
+  </div>
+
+  <div class="t s6" id="about" data-v="home">
     <p class="eyebrow">About</p>
     <h2>Careful work, dependable support.</h2>
     <p>Organized, detail-oriented virtual assistant with experience across data entry, documentation, customer support, quality analysis, and workflow coordination. I help clients stay organized and productive through accurate work, clear communication, and dependable day-to-day support.</p>
   </div>
-  <div class="t mint s2 duo">
-    <div class="stat"><div class="num">1000+</div><div class="cap">test cases documented</div></div>
-    <div class="stat"><div class="num">95%</div><div class="cap">QA score in support</div></div>
+
+  <a class="t yel door s3" id="paths" href="#qa" data-v="home">
+    <h2>Quality Assurance</h2>
+    <p>Manual functional, regression, and exploratory testing with clear, reproducible bug reports.</p>
+    <ul><li>Functional and end-to-end testing</li><li>Regression and exploratory testing</li><li>Clear bug reports and test cases</li></ul>
+    <span class="pill door-go">Open the Quality Assurance page</span>
+  </a>
+  <a class="t blue door s3" href="#va" data-v="home">
+    <h2>Virtual Assistant</h2>
+    <p>Data entry, records, documents, and automations that remove repeat typing, so you can focus on higher-priority tasks.</p>
+    <ul><li>Data entry and record keeping</li><li>Document and admin support</li><li>Google Sheets automations</li></ul>
+    <span class="pill door-go">Open the Virtual Assistant page</span>
+  </a>
+
+  <div class="t svc s3" id="services" data-v="va"><div class="ic">01</div><h3>Data entry &amp; records</h3><p>Accurate data entry, verification, spreadsheet tracking, and record keeping in Google Sheets and Excel.</p></div>
+  <div class="t svc s3" data-v="va"><div class="ic">02</div><h3>Admin &amp; documentation</h3><p>Document management, reporting, research, and written guides that make processes easy to follow.</p></div>
+  <div class="t svc s3" data-v="va"><div class="ic">03</div><h3>Customer &amp; client support</h3><p>Chat and email support, logistics follow-up, and clear client communication.</p></div>
+  <div class="t svc s3" data-v="va"><div class="ic">04</div><h3>Automation &amp; CRM follow-up</h3><p>Forms and records that land in Google Sheets on their own, plus contact records and follow-up tasks in a practice CRM.</p></div>
+
+  <div class="t svc s3" id="qa-services" data-v="qa"><div class="ic">01</div><h3>Functional &amp; end-to-end testing</h3><p>Confirming features meet requirements and full customer journeys work from start to finish.</p></div>
+  <div class="t svc s3" data-v="qa"><div class="ic">02</div><h3>Regression &amp; sanity testing</h3><p>Keeping releases stable so new changes do not break what already works.</p></div>
+  <div class="t svc s3" data-v="qa"><div class="ic">03</div><h3>Exploratory testing</h3><p>Finding unexpected behavior, UI inconsistencies, and usability issues across browsers, devices, and iOS.</p></div>
+  <div class="t svc s3" data-v="qa"><div class="ic">04</div><h3>Defect reports &amp; test cases</h3><p>Reproducible reports with clear steps, expected vs actual results, and screenshots, plus organized test case documentation.</p></div>
+
+  <div class="t blue s6" id="qa-featured" data-v="qa">
+    <p class="eyebrow">Featured work</p>
+    <h2>Buyflow test automation</h2>
+    <p>I built and ran an automated script that walks a customer buyflow from start to finish, so problems in the journey are caught before a release reaches customers.</p>
+    <div class="chips" style="margin-top:16px"><span class="chip">Automated script</span><span class="chip">End-to-end customer journey</span><span class="chip">Pre-release checks</span></div>
   </div>
 
-  <div class="t svc s3" id="services"><div class="ic">01</div><h3>Data entry &amp; records</h3><p>Accurate data entry, verification, spreadsheet tracking, and record keeping in Google Sheets and Excel.</p></div>
-  <div class="t svc s3"><div class="ic">02</div><h3>Admin &amp; documentation</h3><p>Document management, reporting, research, and written guides that make processes easy to follow.</p></div>
-  <div class="t svc s3"><div class="ic">03</div><h3>Customer &amp; client support</h3><p>Chat and email support, logistics follow-up, and clear client communication.</p></div>
-  <div class="t svc s3"><div class="ic">04</div><h3>Quality Assurance &amp; process checks</h3><p>Manual testing, defect reporting, and workflow checks so problems get caught early.</p></div>
-
-  <div class="t blue s6" id="featured">
+  <div class="t blue s6" id="featured" data-v="qa">
     <div class="feat-grid">
       <div>
         <p class="eyebrow">Featured project</p>
@@ -486,7 +588,7 @@ body:has(dialog[open]){overflow:hidden;}
     </div>
   </div>
 
-  <div class="t mint s6" id="crm-practice">
+  <div class="t mint s6" id="crm-practice" data-v="va">
     <div class="crm-split">
       <div>
         <p class="eyebrow">Practice project</p>
@@ -499,7 +601,7 @@ body:has(dialog[open]){overflow:hidden;}
     </div>
   </div>
 
-  <div class="t mint s6">
+  <div class="t mint s6" data-v="va qa">
     <p class="eyebrow">How I work</p>
     <div class="duo" style="grid-template-columns:1fr 1fr; gap:24px;">
       <div><h3>Quick to learn new systems</h3><p>Comfortable picking up new tools, platforms, and processes fast, so I can start contributing without a long ramp-up.</p></div>
@@ -507,7 +609,7 @@ body:has(dialog[open]){overflow:hidden;}
     </div>
   </div>
 
-  <div class="t s6" id="work">
+  <div class="t s6" id="work-va" data-v="va">
     <p class="eyebrow">Experience</p>
     <div class="job">
       <div class="when">FEB 2025</div>
@@ -523,15 +625,6 @@ body:has(dialog[open]){overflow:hidden;}
         </ul></div>
     </div>
     <div class="job">
-      <div class="when">SEPT 2024</div>
-      <div><h3>Chat &amp; Email Support / Logistics</h3><div class="co">Red Wireless</div>
-        <ul>
-          <li>Achieved 95% of available QA evaluation points, showing consistent accuracy and quality.</li>
-          <li>Documented ticket dates and details in a spreadsheet for tracking and accuracy.</li>
-          <li>Resolved customer inquiries by chat and email, handled logistics issues, and recommended products based on customer needs.</li>
-        </ul></div>
-    </div>
-    <div class="job">
       <div class="when">JULY 2023</div>
       <div><h3>Office Assistant (SPES)</h3><div class="co">Integrated Barangay Affairs, City Hall</div>
         <ul><li>Assisted the office with day-to-day records work — encoding and maintaining data in Excel, and receiving, sorting, and filing incoming documents — so staff could stay focused on higher-priority community programs.</li></ul></div>
@@ -543,7 +636,43 @@ body:has(dialog[open]){overflow:hidden;}
     </div>
   </div>
 
-  <div class="t s3" id="tools">
+  <div class="t s6" id="work-qa" data-v="qa">
+    <p class="eyebrow">Experience</p>
+    <div class="job">
+      <div class="when">JULY 2026 TO PRESENT</div>
+      <div><h3>Independent Software QA Tester (Freelance)</h3><div class="co">uTest</div>
+        <ul>
+          <li>Execute manual test cases and project scenarios on web and mobile applications through crowd testing engagements.</li>
+          <li>Report reproducible defects with clear steps, expected vs actual results and screenshots.</li>
+          <li>Perform exploratory and functional testing to identify defects, unexpected behavior, UI inconsistencies, and usability issues across web browsers, devices, operating systems and iOS.</li>
+        </ul></div>
+    </div>
+    <div class="job">
+      <div class="when">FEB 2025</div>
+      <div><h3>Quality Assurance Analyst: Software Tester &amp; SME Assistant</h3><div class="co">LotusFlare | T-Mobile Fiber Project</div>
+        <ul>
+          <li>Designed an automation that stores order data in Google Sheets after a buyflow runs through order submission, and built an automated buyflow testing script.</li>
+          <li>Created and maintained 1000+ detailed test cases and documentation, kept organized, accurate, and easy to follow.</li>
+          <li>Identified and documented 100+ bugs and defects and caught major defects before production deployment.</li>
+          <li>Supported the live production deployment as one of the QA testers, contributing to a smooth launch.</li>
+          <li>Created Master Information Documents on key processes and workflows to help new team members learn the project.</li>
+          <li>Trusted assistant to the SME on the team's most crucial shift, providing reliable support by handling daily responsibilities.</li>
+          <li>Trained new team members on project workflows, testing procedures, and quality standards to support effective onboarding.</li>
+        </ul></div>
+    </div>
+    <div class="job">
+      <div class="when">MAY 2024</div>
+      <div><h3>Manual Tester (Outsourced)</h3><div class="co">Freelance (Self-employed)</div>
+        <ul>
+          <li>Performed manual functional, regression and end-to-end testing for a client web application under contract.</li>
+          <li>Created and executed test cases, documented defects and verified bug fixes.</li>
+          <li>Identified, documented, and reported functional defects, UI inconsistencies, and unexpected application behavior with clear reproduction steps and supporting evidence.</li>
+          <li>Conducted retesting and regression to verify bug fixes and ensure previously working functionalities remained unaffected.</li>
+        </ul></div>
+    </div>
+  </div>
+
+  <div class="t s3" id="tools" data-v="va qa">
     <p class="eyebrow">Tools &amp; platforms</p>
     <p class="grp">Spreadsheets &amp; documents</p><div class="chips"><span class="chip">Google Sheets</span><span class="chip">Google Workspace</span><span class="chip">Microsoft Excel</span><span class="chip">Microsoft Office</span></div>
     <p class="grp">Communication</p><div class="chips"><span class="chip">Slack</span><span class="chip">Microsoft Teams</span><span class="chip">Zoom</span><span class="chip">Skype</span><span class="chip">Outlook</span><span class="chip">WhatsApp</span><span class="chip">Missive</span></div>
@@ -551,11 +680,21 @@ body:has(dialog[open]){overflow:hidden;}
     <p class="grp">AI tools</p><div class="chips" style="margin-bottom:0"><span class="chip">ChatGPT</span><span class="chip">Claude</span><span class="chip">Gemini</span></div>
   </div>
 
-  <div class="t edu s3">
+  <div class="t edu s3" data-v="va qa">
     <p class="eyebrow">Education &amp; certifications</p>
     <p><b>Bachelor of Physical Education</b>Cronasia Foundation College, Inc. · 2020–2024</p>
     <p><b>Emergency First Aid Training &amp; Red Cross Youth Volunteer (P.I.O.)</b>Philippine Red Cross Gensan · April 2023</p>
     <p><b>Mental Health Awareness Seminar</b>January 2024</p>
+  </div>
+
+  <div class="t mint s6 nextrow" data-v="va qa">
+    <p class="eyebrow">Where to next?</p>
+    <div class="acts">
+      <a class="pill" href="mailto:edmondpolinar@gmail.com" data-open-contact>Email me</a>
+      <a class="pill ghost nx-va" href="#va">See Virtual Assistant</a>
+      <a class="pill ghost nx-qa" href="#qa">See Quality Assurance</a>
+      <a class="pill ghost" href="#home">Back to start</a>
+    </div>
   </div>
 
   <div class="t ink contact s6" id="contact">
@@ -573,6 +712,9 @@ body:has(dialog[open]){overflow:hidden;}
 </div>
 </main>
 <footer>© 2026 Edmond Polinar · <a href="admin/login/" rel="nofollow" data-open-admin>Admin</a></footer>
+<nav class="bar" aria-label="Quick menu"><a href="#home" data-nav="home">Home</a><a href="#qa" data-nav="qa">Quality Assurance</a><a href="#va" data-nav="va">Virtual Assistant</a><a href="#contact">Contact</a></nav>
+<button class="totop" id="toTop" type="button" aria-label="Back to top" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
 <script src="admin/config.js"></script>
 <script src="admin/api.js"></script>
 
@@ -1228,18 +1370,30 @@ csInit('crm');
       box.appendChild(w);
     });
   });
+  /* Each role has a "Shows on" setting in the dashboard (VA, Quality Assurance, or both). Until that setting exists, guess from the title. */
+  function trackOf(r){
+    if(r.track) return r.track;
+    var t=((r.role||'')+' '+(r.company||'')).toLowerCase();
+    var qa=/tester|\bqa\b|quality assurance|utest/.test(t), va=/assistant|admin|support|office|data entry|clerk/.test(t);
+    return qa&&va?'both':qa?'qa':va?'va':'both';
+  }
   get('experience','sort_order.asc,created_at.asc').then(function(rows){
-    var box=document.getElementById('work'); if(!box||!Array.isArray(rows)||!rows.length) return;
-    var eb=box.querySelector('.eyebrow'); while(eb.nextSibling) box.removeChild(eb.nextSibling);
-    rows.forEach(function(r){
-      var end=r.is_current?'Present':(r.end_label||''), st=r.start_label||'';
-      var when=(st&&end)?st+' to '+end:(st||end);
-      var job=mk('div','job'); job.appendChild(mk('div','when',when.toUpperCase()));
-      var body=mk('div'); body.appendChild(mk('h3','',r.role));
-      if(r.company) body.appendChild(mk('div','co',r.company));
-      var lines=String(r.bullets||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);
-      if(lines.length){var ul=mk('ul');lines.forEach(function(l){ul.appendChild(mk('li','',l));});body.appendChild(ul);}
-      job.appendChild(body); box.appendChild(job);
+    if(!Array.isArray(rows)||!rows.length) return;
+    ['va','qa'].forEach(function(v){
+      var box=document.getElementById('work-'+v); if(!box) return;
+      var mine=rows.filter(function(r){var t=trackOf(r);return t===v||t==='both';});
+      if(!mine.length){box.hidden=true;return;}
+      var eb=box.querySelector('.eyebrow'); while(eb.nextSibling) box.removeChild(eb.nextSibling);
+      mine.forEach(function(r){
+        var end=r.is_current?'Present':(r.end_label||''), st=r.start_label||'';
+        var when=(st&&end)?st+' to '+end:(st||end);
+        var job=mk('div','job'); job.appendChild(mk('div','when',when.toUpperCase()));
+        var body=mk('div'); body.appendChild(mk('h3','',r.role));
+        if(r.company) body.appendChild(mk('div','co',r.company));
+        var lines=String(r.bullets||'').split('\n').map(function(x){return x.trim();}).filter(Boolean);
+        if(lines.length){var ul=mk('ul');lines.forEach(function(l){ul.appendChild(mk('li','',l));});body.appendChild(ul);}
+        job.appendChild(body); box.appendChild(job);
+      });
     });
   });
 })();
@@ -1249,16 +1403,28 @@ csInit('crm');
   var still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(fine&&!still){window.addEventListener('mousemove',function(e){var r=document.documentElement.style;r.setProperty('--mx',((e.clientX/innerWidth-.5)*2).toFixed(3));r.setProperty('--my',((e.clientY/innerHeight-.5)*2).toFixed(3));},{passive:true});}
   var trk=document.getElementById('edTrk'),pos=document.getElementById('edPos'),lb=document.getElementById('edLb'); if(!trk) return;
-  var list=[['Intro',null],['Services','services'],['Featured','featured'],['CRM practice','crm-practice'],['Work','work'],['Tools','tools'],['Contact','contact']];
-  list.forEach(function(x,i){var t=document.createElement('div');t.className='tk';t.style.top=(i/(list.length-1)*100)+'%';trk.appendChild(t);});
-  var els=list.map(function(x){return x[1]?document.getElementById(x[1]):null;});
+  var LISTS={
+    home:[['Intro',null],['About','about'],['Contact','contact']],
+    va:[['Intro',null],['Services','services'],['CRM practice','crm-practice'],['Work','work-va'],['Tools','tools'],['Contact','contact']],
+    qa:[['Intro',null],['Services','qa-services'],['Featured','qa-featured'],['Order logging','featured'],['Work','work-qa'],['Tools','tools'],['Contact','contact']]
+  };
+  var list=LISTS.home, els=[];
   function upd(){
     var max=document.documentElement.scrollHeight-innerHeight,p=max>0?Math.min(1,Math.max(0,scrollY/max)):0;
     pos.style.top='calc('+(p*100)+'% - 6px)'; lb.style.top='calc('+(p*100)+'% - 6px)';
-    var cur=0; els.forEach(function(el,i){if(el&&el.getBoundingClientRect().top<innerHeight*.45)cur=i;});
+    var cur=0; els.forEach(function(el,i){if(el&&el.offsetParent!==null&&el.getBoundingClientRect().top<innerHeight*.45)cur=i;});
     lb.textContent=list[cur][0];
   }
-  window.addEventListener('scroll',upd,{passive:true}); window.addEventListener('resize',upd); upd();
+  function build(v){
+    list=LISTS[v]||LISTS.home;
+    [].slice.call(trk.querySelectorAll('.tk')).forEach(function(n){trk.removeChild(n);});
+    list.forEach(function(x,i){var t=document.createElement('div');t.className='tk';t.style.top=(i/(list.length-1)*100)+'%';trk.appendChild(t);});
+    els=list.map(function(x){return x[1]?document.getElementById(x[1]):null;});
+    upd();
+  }
+  window.__edSetView=build;
+  window.addEventListener('scroll',upd,{passive:true}); window.addEventListener('resize',upd);
+  build(document.body.getAttribute('data-view')||'home');
 })();
 
 (function(){
@@ -1298,6 +1464,37 @@ csInit('crm');
   if('IntersectionObserver' in window){new IntersectionObserver(function(en){en[0].isIntersecting?start():stop()}).observe(document.getElementById('crm-practice'))}else{start()}
 })();
 
+
+/* Pages: home, #va, #qa. One file, switched by the URL hash. Other hashes (#contact, #tools...) scroll to that section and switch page if needed. */
+(function(){
+  var VIEWS={home:1,va:1,qa:1};
+  var TITLES={home:'Edmond Polinar — Virtual Assistant & Quality Assurance',va:'Edmond Polinar — Virtual Assistant',qa:'Edmond Polinar — Quality Assurance'};
+  var cur='home', toTop=document.getElementById('toTop');
+  function mark(v){
+    [].forEach.call(document.querySelectorAll('[data-nav]'),function(a){
+      if(a.getAttribute('data-nav')===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+    });
+  }
+  function apply(v){
+    cur=v; document.body.setAttribute('data-view',v); document.title=TITLES[v]; mark(v);
+    if(window.__edSetView) window.__edSetView(v);
+  }
+  function route(first){
+    var h=''; try{h=decodeURIComponent(location.hash.slice(1));}catch(e){}
+    if(!h||h==='home'||VIEWS[h]){ apply(h&&VIEWS[h]?h:'home'); if(!first) window.scrollTo(0,0); return; }
+    var id=(h==='work')?('work-'+(cur==='qa'?'qa':'va')):h;
+    var el=document.getElementById(id); if(!el) return;
+    if(el.offsetParent===null){
+      var tokens=(el.getAttribute('data-v')||'').split(' ').filter(function(x){return x&&x!=='home';});
+      if(tokens.length){ apply(tokens.indexOf(cur)>-1?cur:tokens[0]); }
+    }
+    el.scrollIntoView();
+  }
+  window.addEventListener('hashchange',function(){route(false);});
+  window.addEventListener('scroll',function(){ if(toTop) toTop.hidden=window.scrollY<500; },{passive:true});
+  if(toTop) toTop.addEventListener('click',function(){window.scrollTo(0,0);});
+  route(true);
+})();
 </script>
 </body>
 </html>

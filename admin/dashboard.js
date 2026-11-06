@@ -451,6 +451,19 @@
     var cur = check('Currently working here (shows “Present”)', r.is_current);
     card.appendChild(cur.wrap);
 
+    var tr = el('div', 'field');
+    var trl = el('label', null, 'Shows on');
+    trl.setAttribute('for', 'r-tr-' + key);
+    tr.appendChild(trl);
+    var trs = document.createElement('select');
+    trs.id = 'r-tr-' + key; trs.className = 'inp';
+    [['both', 'Both pages'], ['va', 'Virtual assistant page'], ['qa', 'Quality Assurance page']].forEach(function (o) {
+      var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; trs.appendChild(op);
+    });
+    trs.value = r.track || 'both';
+    tr.appendChild(trs);
+    card.appendChild(tr);
+
     var bl = field('What I did (one point per line)', 'r-bl-' + key, r.bullets, { area: true, max: 4000, rows: 6 });
     card.appendChild(bl.wrap);
 
@@ -470,7 +483,8 @@
         end_label: $('r-en-' + key).value.trim(),
         is_current: cur.input.checked,
         bullets: $('r-bl-' + key).value.replace(/\r/g, '').split('\n').map(function (x) { return x.trim(); }).filter(Boolean).join('\n'),
-        visible: vis.input.checked
+        visible: vis.input.checked,
+        track: trs.value
       };
       saveRole(r, fields, save);
     });
@@ -606,7 +620,7 @@
     $('skillForm').addEventListener('submit', addSkill);
     $('expAdd').addEventListener('click', function () {
       if (!state.expLoaded) { toast('Still loading. Try again in a moment.', 'err'); return; }
-      state.draft = { role: '', company: '', start_label: '', end_label: '', is_current: false, bullets: '', visible: true };
+      state.draft = { role: '', company: '', start_label: '', end_label: '', is_current: false, bullets: '', visible: true, track: 'both' };
       renderExp();
       var f = $('r-role-new'); if (f) f.focus();
     });
