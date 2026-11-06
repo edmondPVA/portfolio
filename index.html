@@ -434,9 +434,25 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
 .sic.ring{background:transparent;}
 .sic.ring svg{width:48px; height:48px; transform:rotate(-90deg); stroke-width:5;}
 .sic.ring .trk{stroke:var(--line);}
-.sic.ring .val{stroke:var(--yel); stroke-dasharray:113.1; stroke-dashoffset:5.7; animation:ringfill 1.1s ease-out both;}
+.sic.ring .val{stroke:var(--yel); stroke-dasharray:113.1; stroke-dashoffset:5.7;}
+.score.go .sic.ring .val,.sr.pop .sic.ring .val{animation:ringfill 1.2s cubic-bezier(.2,.7,.2,1) both;}
 @keyframes ringfill{from{stroke-dashoffset:113.1;}}
-@media (prefers-reduced-motion:reduce){.sic.ring .val{animation:none;}}
+/* movement: staggered entrance, hover lift, tap to replay */
+.sr{cursor:pointer; transition:transform .25s ease; outline-offset:4px;}
+.sr .sic{transition:transform .3s cubic-bezier(.3,1.6,.5,1);}
+.sr:hover,.sr:focus-visible{transform:translateX(5px);}
+.sr:hover .sic,.sr:focus-visible .sic{transform:translateY(-3px) rotate(-8deg) scale(1.06);}
+.sr:hover .sic.ring,.sr:focus-visible .sic.ring{transform:rotate(12deg) scale(1.06);}
+.score.go .sr{animation:srin .6s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(var(--i,0)*110ms);}
+@keyframes srin{from{opacity:0; transform:translateY(14px);}}
+.sr.pop b{animation:numpop .45s cubic-bezier(.3,1.6,.5,1);}
+@keyframes numpop{40%{transform:scale(1.12); transform-origin:left center;}}
+.sr:hover .bug svg{animation:bugwig .5s ease-in-out;}
+@keyframes bugwig{25%{transform:rotate(-14deg);}75%{transform:rotate(14deg);}}
+@media (prefers-reduced-motion:reduce){
+  .score.go .sr,.score.go .sic.ring .val,.sr.pop b,.sr.pop .sic.ring .val,.sr:hover .bug svg{animation:none;}
+  .sr,.sr .sic{transition:none;} .sr:hover,.sr:hover .sic{transform:none;}
+}
 </style>
 </head>
 <body data-view="home">
@@ -517,10 +533,10 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
   <div class="t score s2 r2" data-v="home">
     <p class="eyebrow">By the numbers</p>
     <div class="srows">
-      <div class="sr"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div><b>2+ yrs</b><span>Quality Assurance, support &amp; admin work</span></div></div>
-      <div class="sr"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5L7.5 11M3.5 18l1.5 1.5L7.5 17"/></svg></span><div><b>1000+</b><span>test cases documented and maintained</span></div></div>
-      <div class="sr"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="8" width="10" height="12" rx="5"/><path d="M9.5 8V7a2.5 2.5 0 015 0v1M12 11v9M3 13h4M17 13h4M4 7l3 2M20 7l-3 2M4 20l3-2M20 20l-3-2"/></svg></span><div><b>100+</b><span>bugs and defects caught and documented</span></div></div>
-      <div class="sr"><span class="sic ring"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="trk" cx="22" cy="22" r="18"/><circle class="val" cx="22" cy="22" r="18"/></svg></span><div><b>95%</b><span>QA score in support</span></div></div>
+      <div class="sr" style="--i:0" tabindex="0" role="button" aria-label="Replay animation"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div><b>2+ yrs</b><span>Quality Assurance, support &amp; admin work</span></div></div>
+      <div class="sr" style="--i:1" tabindex="0" role="button" aria-label="Replay animation"><span class="sic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5L7.5 11M3.5 18l1.5 1.5L7.5 17"/></svg></span><div><b>1000+</b><span>test cases documented and maintained</span></div></div>
+      <div class="sr" style="--i:2" tabindex="0" role="button" aria-label="Replay animation"><span class="sic bug"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="8" width="10" height="12" rx="5"/><path d="M9.5 8V7a2.5 2.5 0 015 0v1M12 11v9M3 13h4M17 13h4M4 7l3 2M20 7l-3 2M4 20l3-2M20 20l-3-2"/></svg></span><div><b>100+</b><span>bugs and defects caught and documented</span></div></div>
+      <div class="sr" style="--i:3" tabindex="0" role="button" aria-label="Replay animation"><span class="sic ring"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="trk" cx="22" cy="22" r="18"/><circle class="val" cx="22" cy="22" r="18"/></svg></span><div><b>95%</b><span>QA score in support</span></div></div>
     </div>
   </div>
 
@@ -1494,6 +1510,48 @@ csInit('crm');
   window.addEventListener('scroll',function(){ if(toTop) toTop.hidden=window.scrollY<500; },{passive:true});
   if(toTop) toTop.addEventListener('click',function(){window.scrollTo(0,0);});
   route(true);
+})();
+</script>
+
+<script>
+/* "By the numbers": count up when it scrolls into view, tap or press a row to replay */
+(function(){
+  var tile=document.querySelector('.score'); if(!tile) return;
+  var still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rows=[].slice.call(tile.querySelectorAll('.sr'));
+  rows.forEach(function(r){
+    var b=r.querySelector('b'), m=(b.textContent||'').match(/^(\d+)(.*)$/);
+    if(m){ r._to=+m[1]; r._suf=m[2]; }
+  });
+  function count(r){
+    if(r._to==null||still) return;
+    var b=r.querySelector('b'), t0=null, dur=1100;
+    function step(t){
+      if(t0===null) t0=t;
+      var p=Math.min((t-t0)/dur,1), e=1-Math.pow(1-p,3);
+      b.textContent=Math.round(r._to*e)+r._suf;
+      if(p<1) requestAnimationFrame(step); else b.textContent=r._to+r._suf;
+    }
+    b.textContent='0'+r._suf; requestAnimationFrame(step);
+  }
+  function replay(r){
+    r.classList.remove('pop'); void r.offsetWidth; r.classList.add('pop'); count(r);
+  }
+  rows.forEach(function(r){
+    r.addEventListener('click',function(){replay(r);});
+    r.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); replay(r);} });
+  });
+  function go(){
+    if(tile.classList.contains('go')) return;
+    tile.classList.add('go');
+    rows.forEach(function(r,i){ setTimeout(function(){count(r);}, i*110); });
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ go(); io.disconnect(); } });
+    },{threshold:.35});
+    io.observe(tile);
+  } else { go(); }
 })();
 </script>
 </body>
