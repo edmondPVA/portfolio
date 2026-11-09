@@ -245,7 +245,7 @@ body:has(dialog[open]){overflow:hidden;}
 .cs-slide.is-on{display:block;}
 @keyframes csIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
 /* CRM tile: modules light up one by one */
-.crm-split{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:28px; align-items:center;}
+.crm-split{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:28px; align-items:start;}
 .crm-mods{display:grid; gap:8px; background:var(--tile); border:1px solid var(--line); border-radius:18px; padding:14px;}
 .crm-mod{display:grid; grid-template-columns:28px 1fr; gap:10px; align-items:center; border:1px solid var(--line); border-radius:12px; padding:6px 10px; background:var(--tile); transition:background .35s,border-color .35s,transform .35s;}
 .crm-mod svg{width:20px; height:20px; fill:none; stroke:var(--soft); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; transition:stroke .35s;}
@@ -257,7 +257,7 @@ body:has(dialog[open]){overflow:hidden;}
 #crmChips .chip{transition:background .35s,color .35s,border-color .35s;}
 #crmChips .chip.on{background:var(--blue); color:#fff; border-color:transparent;}
 .crm-right{display:grid; gap:12px; min-width:0;}
-.crm-auto{background:var(--tile); border:1px solid var(--line); border-radius:18px; padding:14px;}
+.crm-auto{margin-top:22px; background:var(--tile); border:1px solid var(--line); border-radius:18px; padding:14px;}
 .ca-head{display:flex; justify-content:space-between; align-items:center; gap:12px;}
 .ca-head small{display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--soft); font-weight:700;}
 .ca-head b{font-size:14px;}
@@ -639,9 +639,6 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
         <p>A practice CRM I used to rehearse day-to-day virtual assistant tasks. Fictional data, nothing is sent.</p>
         <div class="chips" id="crmChips" style="margin:16px 0 20px"><span class="chip">Dashboard</span><span class="chip">Contacts</span><span class="chip">Opportunities</span><span class="chip">Conversations</span><span class="chip">Calendars</span><span class="chip">Automation</span></div>
         <button class="pill feat-btn" type="button" id="crmOpen">Start walkthrough</button>
-      </div>
-      <div class="crm-right">
-        <div class="crm-mods" id="crmMods" aria-hidden="true"></div>
         <div class="crm-auto" id="crmAuto">
           <div class="ca-head"><div><small>Try it</small><b>A new lead comes in</b></div>
             <button class="ca-sw hint" id="caSw" type="button" role="switch" aria-checked="false"><i></i><span id="caLbl">Automation off</span></button></div>
@@ -649,6 +646,7 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
           <div class="ca-meter"><div><b id="caClicks">5</b><small>clicks</small></div><div><b id="caMin">~10</b><small>min</small></div><p id="caNote" aria-live="polite">By hand: copy the details, write the email, check dates, book the call.</p></div>
         </div>
       </div>
+      <div class="crm-mods" id="crmMods" aria-hidden="true"></div>
     </div>
   </div>
 
@@ -1516,9 +1514,10 @@ csInit('crm');
     var rows=[1,3,4], tm=[], on=false;
     var MAN='By hand: copy the details, write the email, check dates, book the call.', AUTO='Runs by itself, so you can focus on higher-priority tasks.';
     function later(f,ms){tm.push(setTimeout(f,ms));}
-    function tween(el,from,to,pre){var t0=null;function st(t){if(t0===null)t0=t;var p=Math.min((t-t0)/900,1),v=Math.round(from+(to-from)*p);el.textContent=(v>0?pre:'')+v;if(p<1&&on)requestAnimationFrame(st);}requestAnimationFrame(st);}
+    var run=0;
+    function tween(el,from,to,pre){var id=run,t0=null;function st(t){if(id!==run)return;if(t0===null)t0=t;var p=Math.min((t-t0)/900,1),v=Math.round(from+(to-from)*p);el.textContent=(v>0?pre:'')+v;if(p<1)requestAnimationFrame(st);}requestAnimationFrame(st);}
     function zap(n){var e=box.children[n]; if(!e) return; e.classList.add('zap'); later(function(){e.classList.remove('zap');},900);}
-    function reset(){tm.forEach(clearTimeout);tm=[];lis.forEach(function(l){l.className='';});[].forEach.call(box.children,function(e){e.classList.remove('zap');});ck.textContent='5';mn.textContent='~10';nt.textContent=MAN;hold=false;}
+    function reset(){run++;tm.forEach(clearTimeout);tm=[];lis.forEach(function(l){l.className='';});[].forEach.call(box.children,function(e){e.classList.remove('zap');});ck.textContent='5';mn.textContent='~10';nt.textContent=MAN;hold=false;}
     function finish(){ck.textContent='0';mn.textContent='0';nt.textContent=AUTO;}
     sw.addEventListener('click',function(){
       sw.classList.remove('hint'); on=!on; sw.setAttribute('aria-checked',on?'true':'false'); lb.textContent=on?'Automation on':'Automation off';
