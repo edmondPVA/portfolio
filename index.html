@@ -256,6 +256,33 @@ body:has(dialog[open]){overflow:hidden;}
 .crm-mod.on span{opacity:1;}
 #crmChips .chip{transition:background .35s,color .35s,border-color .35s;}
 #crmChips .chip.on{background:var(--blue); color:#fff; border-color:transparent;}
+.crm-right{display:grid; gap:12px; min-width:0;}
+.crm-auto{background:var(--tile); border:1px solid var(--line); border-radius:18px; padding:14px;}
+.ca-head{display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.ca-head small{display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--soft); font-weight:700;}
+.ca-head b{font-size:14px;}
+.ca-sw{display:flex; align-items:center; gap:8px; border:1px solid var(--line); background:transparent; color:var(--fg); border-radius:999px; padding:4px 12px 4px 4px; font:inherit; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap;}
+.ca-sw i{width:34px; height:20px; border-radius:999px; background:var(--line); position:relative; transition:background .25s;}
+.ca-sw i::after{content:""; position:absolute; top:3px; left:3px; width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .25s;}
+.ca-sw[aria-checked="true"] i{background:var(--yel);}
+.ca-sw[aria-checked="true"] i::after{transform:translateX(14px);}
+.ca-sw:focus-visible{outline:3px solid var(--yel); outline-offset:2px;}
+.ca-sw.hint{animation:caHint 1.8s ease-out infinite;}
+@keyframes caHint{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--yel) 55%,transparent);}100%{box-shadow:0 0 0 10px transparent;}}
+.ca-steps{list-style:none; margin:12px 0 0; padding:0; display:grid; gap:6px;}
+.ca-steps li{display:flex; align-items:center; gap:10px; font-size:13px; padding:6px 10px; border:1px dashed var(--line); border-radius:10px; color:var(--soft); transition:border-color .3s,color .3s,background .3s;}
+.ca-steps li::before{content:""; width:16px; height:16px; border-radius:50%; border:1.5px solid var(--soft); flex:none; display:grid; place-items:center; font-size:10px; font-weight:800; color:#1f2d3b; transition:background .3s,border-color .3s;}
+.ca-steps li.run{border-color:var(--yel); color:var(--fg);}
+.ca-steps li.run::before{border-color:var(--yel); animation:caPulse .9s ease-in-out infinite;}
+.ca-steps li.done{border-style:solid; border-color:var(--yel); color:var(--fg); background:color-mix(in srgb,var(--yel) 14%,transparent);}
+.ca-steps li.done::before{content:"\2713"; background:var(--yel); border-color:var(--yel);}
+@keyframes caPulse{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--yel) 30%,transparent);}}
+.ca-meter{display:flex; align-items:center; gap:18px; margin-top:12px;}
+.ca-meter b{display:block; font-size:22px; line-height:1; font-variant-numeric:tabular-nums;}
+.ca-meter small{font-size:11px; color:var(--soft);}
+.ca-meter p{margin:0; font-size:12px; color:var(--soft); line-height:1.4; flex:1;}
+.crm-mod.zap{border-color:var(--yel); box-shadow:0 0 0 3px color-mix(in srgb,var(--yel) 30%,transparent); transform:translateX(4px);}
+@media (prefers-reduced-motion:reduce){.ca-sw.hint,.ca-steps li.run::before{animation:none;} .ca-sw i,.ca-sw i::after,.ca-steps li{transition:none;}}
 @media (max-width:820px){.crm-split{grid-template-columns:minmax(0,1fr);} .crm-mod.on{transform:none;}}
 @media (prefers-reduced-motion:reduce){.crm-mod,#crmChips .chip,.crm-mod span{transition:none;}}
 /* Expandable screenshots in the CRM walkthrough */
@@ -613,7 +640,15 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
         <div class="chips" id="crmChips" style="margin:16px 0 20px"><span class="chip">Dashboard</span><span class="chip">Contacts</span><span class="chip">Opportunities</span><span class="chip">Conversations</span><span class="chip">Calendars</span><span class="chip">Automation</span></div>
         <button class="pill feat-btn" type="button" id="crmOpen">Start walkthrough</button>
       </div>
-      <div class="crm-mods" id="crmMods" aria-hidden="true"></div>
+      <div class="crm-right">
+        <div class="crm-mods" id="crmMods" aria-hidden="true"></div>
+        <div class="crm-auto" id="crmAuto">
+          <div class="ca-head"><div><small>Try it</small><b>A new lead comes in</b></div>
+            <button class="ca-sw hint" id="caSw" type="button" role="switch" aria-checked="false"><i></i><span id="caLbl">Automation off</span></button></div>
+          <ol class="ca-steps" id="caSteps"><li>Lead added to Contacts</li><li>Follow-up email queued</li><li>Call booked on Calendar</li></ol>
+          <div class="ca-meter"><div><b id="caClicks">5</b><small>clicks</small></div><div><b id="caMin">~10</b><small>min</small></div><p id="caNote" aria-live="polite">By hand: copy the details, write the email, check dates, book the call.</p></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1472,10 +1507,34 @@ csInit('crm');
   var chips=document.querySelectorAll('#crmChips .chip');
   var M=[['Dashboard','Totals, pipeline and tasks at a glance','<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>'],['Contacts','One profile per lead, with tags and notes','<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'],['Opportunities','Every deal, stage by stage','<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="5" height="13" rx="1.5"/>'],['Conversations','Reply and keep the history','<path d="M4 5h16v11H10l-5 4v-4H4z"/>'],['Calendars','Book and manage appointments','<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'],['Automation','Make follow-up repeatable','<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>']];
   M.forEach(function(m){var d=document.createElement('div');d.className='crm-mod';d.innerHTML='<svg viewBox="0 0 24 24">'+m[2]+'</svg><div><b>'+m[0]+'</b><span>'+m[1]+'</span></div>';box.appendChild(d)});
-  var i=0,t=null,still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var i=0,t=null,hold=false,still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function show(n){[].forEach.call(box.children,function(e,j){e.classList.toggle('on',j===n)});[].forEach.call(chips,function(c,j){c.classList.toggle('on',j===n)})}
+  /* "Try it": switch automation on and watch the steps run by themselves */
+  (function(){
+    var sw=document.getElementById('caSw'); if(!sw) return;
+    var lis=[].slice.call(document.querySelectorAll('#caSteps li')), ck=document.getElementById('caClicks'), mn=document.getElementById('caMin'), nt=document.getElementById('caNote'), lb=document.getElementById('caLbl');
+    var rows=[1,3,4], tm=[], on=false;
+    var MAN='By hand: copy the details, write the email, check dates, book the call.', AUTO='Runs by itself, so you can focus on higher-priority tasks.';
+    function later(f,ms){tm.push(setTimeout(f,ms));}
+    function tween(el,from,to,pre){var t0=null;function st(t){if(t0===null)t0=t;var p=Math.min((t-t0)/900,1),v=Math.round(from+(to-from)*p);el.textContent=(v>0?pre:'')+v;if(p<1&&on)requestAnimationFrame(st);}requestAnimationFrame(st);}
+    function zap(n){var e=box.children[n]; if(!e) return; e.classList.add('zap'); later(function(){e.classList.remove('zap');},900);}
+    function reset(){tm.forEach(clearTimeout);tm=[];lis.forEach(function(l){l.className='';});[].forEach.call(box.children,function(e){e.classList.remove('zap');});ck.textContent='5';mn.textContent='~10';nt.textContent=MAN;hold=false;}
+    function finish(){ck.textContent='0';mn.textContent='0';nt.textContent=AUTO;}
+    sw.addEventListener('click',function(){
+      sw.classList.remove('hint'); on=!on; sw.setAttribute('aria-checked',on?'true':'false'); lb.textContent=on?'Automation on':'Automation off';
+      reset(); if(!on) return;
+      if(still){lis.forEach(function(l){l.className='done';});finish();return;}
+      hold=true; [].forEach.call(box.children,function(e){e.classList.remove('on');});
+      lis.forEach(function(l,k){
+        later(function(){l.className='run';zap(rows[k]);},k*1100+200);
+        later(function(){l.className='done';},k*1100+900);
+      });
+      later(function(){tween(ck,5,0,'');tween(mn,10,0,'~');nt.textContent=AUTO;},lis.length*1100+100);
+      later(function(){hold=false;},lis.length*1100+1800);
+    });
+  })();
   show(0); if(still) return;
-  function start(){if(!t)t=setInterval(function(){i=(i+1)%M.length;show(i)},1800)}
+  function start(){if(!t)t=setInterval(function(){if(hold)return;i=(i+1)%M.length;show(i)},1800)}
   function stop(){clearInterval(t);t=null}
   if('IntersectionObserver' in window){new IntersectionObserver(function(en){en[0].isIntersecting?start():stop()}).observe(document.getElementById('crm-practice'))}else{start()}
 })();
