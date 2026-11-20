@@ -364,6 +364,27 @@ body:has(dialog[open]){overflow:hidden;}
 .cs-c.cs-blue :focus-visible,.cs-c.cs-yel :focus-visible{outline-color:#fff;}
 .cs-c.cs-yel :focus-visible{outline-color:var(--blue);}
 
+/* CRM Event Automation: section heading, event feed and flow drawing */
+.case-head{grid-column:span 6; padding:18px 6px 2px; display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:6px 24px;}
+.case-head h2{font-size:clamp(24px,3vw,34px); margin:0;}
+.case-head p{margin:0; color:var(--soft); max-width:56ch; font-size:15px;}
+.ev-feed{background:rgba(0,0,0,.16); border:1px solid rgba(255,255,255,.18); border-radius:18px; padding:14px; display:flex; flex-direction:column; gap:10px; min-width:0;}
+.ev-row{display:grid; grid-template-columns:150px minmax(0,1fr); gap:4px 12px; align-items:center; background:rgba(255,255,255,.1); border-radius:12px; padding:10px 12px; font-size:14px;}
+.ev-row code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; background:rgba(255,255,255,.16); padding:3px 8px; border-radius:8px; white-space:nowrap; justify-self:start;}
+.ev-cap{font-size:12px; opacity:.7; margin:0; text-align:right;}
+@media (max-width:480px){.ev-row{grid-template-columns:minmax(0,1fr);}}
+.ev-scroll{overflow-x:auto; margin-top:6px;}
+.ev-shot{aspect-ratio:55/67; margin:0 0 4px; background:var(--page);}
+.ev-alert{aspect-ratio:760/210; background:var(--page);}
+.ev-rowshot{aspect-ratio:1704/80; background:var(--page); border:1px solid var(--line); margin:0 0 4px;}
+.ev-chap{margin-top:12px;}
+.ev-flow{display:block; width:100%; min-width:620px; height:auto;}
+.ev-flow .bx{fill:none; stroke:var(--soft); stroke-width:1.25;}
+.ev-flow .hub{fill:color-mix(in srgb,var(--yel) 24%,transparent); stroke:var(--yel); stroke-width:2;}
+.ev-flow .ln{fill:none; stroke:var(--soft); stroke-width:1.25;}
+.ev-flow text{fill:var(--fg); font-family:'DM Sans',sans-serif; font-size:11.5px;}
+.ev-flow .q{fill:var(--soft);}
+
 @media (max-width:720px){
   .cs-c,.cs-t,.cs-b{grid-column:span 6; padding:20px;}
   .cs-steps{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -376,7 +397,7 @@ body:has(dialog[open]){overflow:hidden;}
 
 @media (max-width:760px){
   .bento{grid-template-columns:1fr;}
-  .s2,.s3,.s4,.s6,.r2{grid-column:span 1; grid-row:auto;}
+  .s2,.s3,.s4,.s6,.r2,.case-head{grid-column:span 1; grid-row:auto;}
   .nav .links{display:none;}
   .job{grid-template-columns:1fr;}
   .stat{min-height:130px;}
@@ -604,10 +625,15 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
     </div>
   </div>
 
+  <div class="case-head" id="case-studies" data-v="va">
+    <div><p class="eyebrow" style="margin:0 0 6px">Case studies</p><h2>The CRM project, in two parts</h2></div>
+    <p>I built a practice CRM, then connected it to n8n so its events run on their own.</p>
+  </div>
+
   <div class="t mint s6" id="crm-practice" data-v="va">
     <div class="crm-split">
       <div>
-        <p class="eyebrow">Practice project</p>
+        <p class="eyebrow">CRM project &middot; Part 1 &middot; Practice project</p>
         <h2>CRM Practice Simulator</h2>
         <p>A practice CRM I created with the help of AI so I could practice and rehearse day-to-day virtual assistant tasks. Fictional data, nothing is sent.</p>
         <p style="margin-top:12px">In it, I worked through the daily tasks a client hands off: adding and tagging leads, moving deals through each stage, replying to messages, booking appointments and testing follow-up automations.</p>
@@ -616,6 +642,27 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
         <button class="pill feat-btn" type="button" id="crmOpen">Start walkthrough</button>
       </div>
       <div class="crm-mods" id="crmMods" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div class="t blue s6" id="crm-events" data-v="va">
+    <div class="feat-grid">
+      <div>
+        <p class="eyebrow">CRM project &middot; Part 2 &middot; Automation</p>
+        <h2>CRM Event Automation with n8n</h2>
+        <p>I connected the CRM Practice Simulator to n8n, so every new contact and every deal change is handled automatically: the right row in Google Sheets and the right email, with no copy and paste.</p>
+        <p style="margin-top:12px">It also catches repeat contacts, so the same person is never logged or welcomed twice.</p>
+        <ul class="feat-stats"><li><b>3</b>workflows built</li><li><b>4</b>event paths</li><li><b>2</b>CRM event types</li></ul>
+        <div class="chips" style="margin:0 0 20px"><span class="chip">n8n</span><span class="chip">Webhook</span><span class="chip">Google Sheets</span><span class="chip">Gmail</span><span class="chip">Error alerts</span></div>
+        <button class="pill feat-btn" type="button" id="evOpen">Start walkthrough</button>
+      </div>
+      <div class="ev-feed" role="img" aria-label="The four event paths: a new contact adds a row and sends a welcome email, a repeat contact adds nothing, a won deal sends a thank-you, a lost deal sends a feedback request">
+        <div class="ev-row"><code>contact_created</code><span>New email: row added, welcome email sent</span></div>
+        <div class="ev-row"><code>contact_created</code><span>Email already in the sheet: no second row, no second email</span></div>
+        <div class="ev-row"><code>deal moved to Won</code><span>Thank-you email that names the project</span></div>
+        <div class="ev-row"><code>deal moved to Lost</code><span>Feedback request email</span></div>
+        <p class="ev-cap">Illustration of the four paths. Fictional contacts.</p>
+      </div>
     </div>
   </div>
 
@@ -1051,6 +1098,163 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
   </div>
 </dialog>
 
+<dialog class="modal cs-modal" id="evModal" aria-labelledby="evTitle">
+  <div class="cs-in" id="evIn" tabindex="-1">
+    <header class="cs-bar">
+      <div class="cs-now"><small>Automation project</small><b id="evTitle" aria-live="polite">Overview</b></div>
+      <div class="cs-act">
+        <button class="pill" type="button" data-open-contact>Email me</button>
+        <button class="x-btn" type="button" id="evClose" aria-label="Close automation project">&times;</button>
+      </div>
+    </header>
+
+    <div class="cs-stage" id="evStage">
+
+      <section class="cs-slide is-on" data-title="Overview">
+        <div class="cs-grid">
+          <div class="cs-c cs-w cs-blue">
+            <p class="eyebrow">Automation project &middot; Part 2 of the CRM project</p>
+            <h1>CRM Event Automation</h1>
+            <p style="font-size:17px;max-width:560px">I connected my CRM Practice Simulator to n8n. Every new contact and every deal change now updates a Google Sheet and sends the right email on its own.</p>
+            <div class="cs-row"><button class="pill y" type="button" data-cs-go="1">Start</button></div>
+          </div>
+          <div class="cs-c cs-t cs-yel"><div class="cs-big">3</div><p>workflows built in n8n</p></div>
+          <div class="cs-c cs-t"><div class="cs-big">4</div><p>event paths: new contact, repeat contact, deal won, deal lost</p></div>
+          <div class="cs-c cs-t cs-mint"><div class="cs-big">0</div><p>real customers emailed. Everything uses fictional test contacts</p></div>
+          <div class="cs-c cs-w"><p class="eyebrow">In this walkthrough</p><div class="cs-tags"><span class="cs-tag">The problem</span><span class="cs-tag">How it works</span><span class="cs-tag">What I built</span><span class="cs-tag">Results</span><span class="cs-tag">What I learned</span></div></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="The problem">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">The problem</p><h2>Manual follow-up gets missed.</h2><p>When a client handles CRM follow-up by hand, every new contact and every closed deal needs someone to remember a chain of small tasks.</p></div>
+          <div class="cs-c cs-t"><h3>Leads go missing</h3><p>A new lead is added to the CRM but never copied into the contact sheet, or is copied twice.</p></div>
+          <div class="cs-c cs-t"><h3>Emails go out late</h3><p>The welcome email is sent late, or not at all.</p></div>
+          <div class="cs-c cs-t"><h3>Deals get no follow-up</h3><p>A deal marked Won or Lost does not trigger a thank-you or a feedback request.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="How it works">
+        <div class="cs-grid">
+          <div class="cs-c cs-w">
+            <p class="eyebrow">How it works</p><h2>One webhook, one router, four paths.</h2>
+            <div class="ev-scroll">
+            <svg class="ev-flow" viewBox="0 0 760 396" role="img" aria-label="CRM events reach a webhook. A router sends contact events to a sheet check, which adds a row and a welcome email for a new contact or updates the Last Contact date for a repeat contact. Deal events go to a Won or Lost check, which sends a thank-you or a feedback request.">
+              <defs><marker id="evAr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--soft)"/></marker></defs>
+              <g class="ln">
+                <path d="M124 165H148" marker-end="url(#evAr)"/><path d="M248 165H272" marker-end="url(#evAr)"/>
+                <path d="M322 139V80H384" marker-end="url(#evAr)"/><path d="M322 191V255H386" marker-end="url(#evAr)"/>
+                <path d="M484 80H510" marker-end="url(#evAr)"/><path d="M606 80H634" marker-end="url(#evAr)"/>
+                <path d="M558 112V134" marker-end="url(#evAr)"/><path d="M482 255H508" marker-end="url(#evAr)"/><path d="M434 287V319" marker-end="url(#evAr)"/>
+              </g>
+              <rect class="bx" x="24" y="139" width="100" height="52" rx="8"/><text x="74" y="162" text-anchor="middle">CRM</text><text x="74" y="177" text-anchor="middle">simulator</text>
+              <rect class="bx" x="148" y="139" width="100" height="52" rx="8"/><text x="198" y="169" text-anchor="middle">Webhook</text>
+              <rect class="hub" x="272" y="139" width="100" height="52" rx="8"/><text x="322" y="162" text-anchor="middle" font-weight="700">Route by</text><text x="322" y="177" text-anchor="middle" font-weight="700">event</text>
+              <rect class="bx" x="384" y="54" width="100" height="52" rx="8"/><text x="434" y="76" text-anchor="middle">Check sheet</text><text x="434" y="91" text-anchor="middle">for email</text>
+              <polygon class="bx" points="510,80 558,48 606,80 558,112"/><text x="558" y="84" text-anchor="middle">New contact?</text>
+              <rect class="bx" x="634" y="48" width="100" height="64" rx="8"/><text x="684" y="71" text-anchor="middle">Add row and</text><text x="684" y="86" text-anchor="middle">send welcome</text><text x="684" y="101" text-anchor="middle">email</text>
+              <rect class="bx" x="508" y="134" width="100" height="52" rx="8"/><text x="558" y="156" text-anchor="middle">Update Last</text><text x="558" y="171" text-anchor="middle">Contact date</text>
+              <polygon class="bx" points="386,255 434,223 482,255 434,287"/><text x="434" y="259" text-anchor="middle">Won or Lost?</text>
+              <rect class="bx" x="508" y="229" width="100" height="52" rx="8"/><text x="558" y="251" text-anchor="middle">Thank-you</text><text x="558" y="266" text-anchor="middle">email</text>
+              <rect class="bx" x="384" y="319" width="100" height="52" rx="8"/><text x="434" y="341" text-anchor="middle">Feedback</text><text x="434" y="356" text-anchor="middle">request</text>
+              <text class="q" x="330" y="72">Contact</text><text class="q" x="328" y="247">Deal stage</text>
+              <text class="q" x="620" y="72" text-anchor="middle">yes</text><text class="q" x="566" y="126">no</text>
+              <text class="q" x="491" y="247" text-anchor="middle">Won</text><text class="q" x="442" y="308">Lost</text>
+            </svg>
+            </div>
+            <p style="font-size:13px;margin:10px 0 0">A contact event is checked against the sheet before anything is written. A deal event goes to the Won or Lost branch and then to the matching email.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="What I built">
+        <div class="cs-grid">
+          <div class="cs-c cs-w">
+            <p class="eyebrow">What I built</p><h2>Three workflows in n8n</h2>
+            <div class="cs-sheet"><table>
+              <thead><tr><th>Workflow</th><th>Trigger</th><th>What it does</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>CRM events</td><td>Webhook from the simulator</td><td>Routes each event, adds or checks the contact row, sends the right email</td><td>Tested</td></tr>
+                <tr><td>Daily stale-lead digest</td><td>Every day, 9 AM Manila</td><td>Finds leads not contacted in 3+ days and emails one summary</td><td>Ran successfully</td></tr>
+                <tr><td>Error alert</td><td>Any workflow failing</td><td>Emails the workflow name, the failed step and a link to the run</td><td>Tested with sample data</td></tr>
+              </tbody></table></div>
+            <div class="cs-tags" style="margin-top:14px"><span class="cs-tag">Webhook</span><span class="cs-tag">Switch</span><span class="cs-tag">Google Sheets</span><span class="cs-tag">Gmail</span><span class="cs-tag">Schedule</span><span class="cs-tag">Error Trigger</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Watch it run" id="evVideoSlide">
+        <div class="cs-grid"><div class="cs-c cs-w">
+          <p class="eyebrow">Proof &middot; Video &middot; 2 min 46 s</p><h2>Watch it run, event by event</h2>
+          <div class="cs-media"><video id="evVideo" controls playsinline muted preload="none" poster="assets/crm-events/poster.jpg" src="assets/crm-events/demo.mp4" aria-label="Screen recording of the CRM practice simulator sending events to n8n, with the sheet and Gmail updating"></video></div>
+          <div class="cs-row ev-chap" role="group" aria-label="Jump to a part of the video">
+            <button class="pill ghost" type="button" data-seek="0">New contact</button>
+            <button class="pill ghost" type="button" data-seek="30">Welcome email</button>
+            <button class="pill ghost" type="button" data-seek="42">Deal won</button>
+            <button class="pill ghost" type="button" data-seek="80">Deal lost</button>
+            <button class="pill ghost" type="button" data-seek="110">Repeat contact</button>
+          </div>
+          <p class="cs-sheetcap">Screen recording, no audio. All contacts and emails are fictional.</p>
+        </div></div>
+      </section>
+
+      <section class="cs-slide" data-title="Proof">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">Proof &middot; Screenshots</p><h2>What lands in the inbox</h2><p>Each email is sent by n8n from a Gmail account, using the data from the CRM event.</p></div>
+          <div class="cs-c cs-t"><div class="cs-media ev-shot"><img src="assets/crm-events/email-welcome.jpg" loading="lazy" alt="Welcome email from Cedar and Co. addressed to Ethan, with a three-step list of what to expect"></div><h3>New contact</h3><p>Welcome email with the next steps.</p></div>
+          <div class="cs-c cs-t"><div class="cs-media ev-shot"><img src="assets/crm-events/email-thanks.jpg" loading="lazy" alt="Thank-you email addressed to Ethan that names the Bathroom project"></div><h3>Deal moved to Won</h3><p>Thank-you email that names the project.</p></div>
+          <div class="cs-c cs-t"><div class="cs-media ev-shot"><img src="assets/crm-events/email-feedback.jpg" loading="lazy" alt="Feedback request email addressed to Ethan about the Bathroom project"></div><h3>Deal moved to Lost</h3><p>A short, polite feedback request.</p></div>
+          <div class="cs-c cs-w"><div class="cs-media ev-rowshot"><img src="assets/crm-events/sheet-repeat.jpg" loading="lazy" alt="Google Sheet with one row for Ethan Jade after the same contact was added a second time"></div><h3>Repeat contact</h3><p>The same contact added again: still one row in the sheet and no second welcome email. n8n updates the Last Contact date instead.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Safety nets">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">Safety nets</p><h2>When something is stale or breaks</h2></div>
+          <div class="cs-c cs-yel"><h3>Daily stale-lead digest</h3><p>Every morning at 9 AM (Manila) n8n reads the sheet, finds leads not contacted in 3 or more days, and sends one summary email instead of me checking by hand.</p><p>Ran successfully when I tested it with sample rows.</p></div>
+          <div class="cs-c"><div class="cs-media ev-alert"><img src="assets/crm-events/email-error.jpg" loading="lazy" alt="Error alert email naming the workflow, the failed step and a link to open the execution in n8n"></div><h3>Error alert</h3><p>If a workflow fails, I get an email with its name, the step that failed and a link to the run. Shown here with n8n's sample data.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Results">
+        <div class="cs-grid">
+          <div class="cs-c cs-w">
+            <p class="eyebrow">Results</p><h2>Tested from the click to the inbox</h2>
+            <div class="cs-sheet"><table>
+              <thead><tr><th>Scenario</th><th>Outcome</th></tr></thead>
+              <tbody>
+                <tr><td>Add a new contact</td><td>Row added, welcome email sent</td></tr>
+                <tr><td>Repeat contact</td><td>No second row, no second welcome email</td></tr>
+                <tr><td>Deal moved to Won</td><td>Thank-you email naming the project</td></tr>
+                <tr><td>Deal moved to Lost</td><td>Feedback request email</td></tr>
+              </tbody></table></div>
+            <p class="cs-sheetcap">All contacts are fictional. I did not measure time saved, so I am not claiming a figure.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="What I learned">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">Wrap-up</p><h2>What I learned</h2></div>
+          <div class="cs-c cs-t cs-yel"><h3>Test the whole path</h3><p>I run the full flow from the CRM to the inbox, not one step at a time.</p></div>
+          <div class="cs-c cs-t"><h3>Small settings matter</h3><p>A field set to plain text instead of an expression broke emails, so I check each field in the run log.</p></div>
+          <div class="cs-c cs-t cs-mint"><h3>Plan for failures</h3><p>An error alert emails me when a workflow breaks, and a repeat check stops contacts being logged twice.</p></div>
+          <div class="cs-c cs-w cs-blue">
+            <p class="eyebrow">Let's talk</p>
+            <p style="font-size:17px;max-width:560px">Want follow-up like this running for your team? Let's talk.</p>
+            <div class="cs-row"><button class="pill y" type="button" data-open-contact>Email me</button><button class="pill ghost" type="button" data-cs-go="0">Replay</button></div>
+            <p style="font-size:13px;margin:18px 0 0">Note: This is a practice project built on a simulated CRM with fictional data. It shows how I build and test automations, not client work.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="cs-ctrl"><div class="cs-dots" id="evDots"></div><span class="cs-count" id="evCount"></span></div>
+    <button class="cs-ar cs-prev" id="evPrev" type="button" aria-label="Previous slide">&larr;</button>
+    <button class="cs-ar cs-next" id="evNext" type="button" aria-label="Next slide">&rarr;</button>
+  </div>
+</dialog>
+
 <script>
 (function(){
   var root = document.documentElement;
@@ -1367,6 +1571,18 @@ function csInit(P){
 }
 csInit('cs');
 csInit('crm');
+csInit('ev');
+// Chapter buttons under the CRM events video: jump to a part and play.
+(function(){
+  var v = document.getElementById('evVideo');
+  if(!v) return;
+  Array.prototype.forEach.call(document.querySelectorAll('#evVideoSlide [data-seek]'), function(b){
+    b.addEventListener('click', function(){
+      v.currentTime = parseFloat(b.getAttribute('data-seek')) || 0;
+      var p = v.play(); if(p && p.catch) p.catch(function(){});
+    });
+  });
+})();
 /* Skills and work experience come from the admin dashboard (Supabase). If they cannot be loaded, the content already on the page stays. */
 (function(){
   var c=window.PORTFOLIO_SUPABASE; if(!c||!window.fetch) return;
@@ -1423,7 +1639,7 @@ csInit('crm');
   var trk=document.getElementById('edTrk'),pos=document.getElementById('edPos'),lb=document.getElementById('edLb'); if(!trk) return;
   var LISTS={
     home:[['Intro',null],['About','about'],['Contact','contact']],
-    va:[['Intro',null],['Services','services'],['CRM practice','crm-practice'],['Work','work-va'],['Tools','tools'],['Contact','contact']],
+    va:[['Intro',null],['Services','services'],['CRM practice','crm-practice'],['CRM automation','crm-events'],['Work','work-va'],['Tools','tools'],['Contact','contact']],
     qa:[['Intro',null],['Services','qa-services'],['Featured','qa-featured'],['Order logging','featured'],['Work','work-qa'],['Tools','tools'],['Contact','contact']]
   };
   var list=LISTS.home, els=[];
