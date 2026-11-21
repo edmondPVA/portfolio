@@ -194,6 +194,8 @@ dialog.dlg .acts{justify-content:flex-end;}
 .two > *{min-width:0;}
 .sk-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;}
 .sk-group h2{font-size:16px;}
+.sk-acts{display:flex; gap:8px; flex-shrink:0;}
+.sk-rename{max-width:320px; padding:8px 12px; font-size:15px;}
 .sk-chips{display:flex; flex-wrap:wrap; gap:8px;}
 .sk-chip{display:inline-flex; align-items:center; gap:6px; background:var(--page); border:1px solid var(--line); border-radius:999px; padding:4px 5px 4px 12px; font-size:14px;}
 .sk-chip button{width:24px; height:24px; border-radius:50%; border:0; background:var(--tile); color:var(--fg); cursor:pointer; font-size:16px; line-height:1;}
