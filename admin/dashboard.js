@@ -327,11 +327,18 @@
       var card = el('div', 't sk-group');
       var head = el('div', 'sk-head');
       head.appendChild(el('h2', null, g));
+      var acts = el('div', 'sk-acts');
+      var rn = el('button', 'pill ghost small', 'Rename group');
+      rn.type = 'button';
+      rn.setAttribute('aria-label', 'Rename the group ' + g);
+      rn.addEventListener('click', function () { startRename(g, head); });
+      acts.appendChild(rn);
       var rg = el('button', 'pill ghost small', 'Remove group');
       rg.type = 'button';
       rg.setAttribute('aria-label', 'Remove the group ' + g + ' and all its skills');
       rg.addEventListener('click', function () { removeGroup(g); });
-      head.appendChild(rg);
+      acts.appendChild(rg);
+      head.appendChild(acts);
       card.appendChild(head);
       var chips = el('div', 'sk-chips');
       state.skills.filter(function (r) { return r.group_name === g; }).forEach(function (r) {
@@ -384,6 +391,44 @@
         else fail(null, 'Some skills in this group could not be removed. Try again.');
       });
     });
+  }
+  /* Rename a group: every skill in it is moved to the new name, so the chips stay together. */
+  function startRename(g, head) {
+    clear(head);
+    var inp = document.createElement('input');
+    inp.className = 'inp sk-rename'; inp.value = g; inp.maxLength = 60;
+    inp.setAttribute('aria-label', 'New name for the group ' + g);
+    var save = el('button', 'pill small', 'Save');
+    save.type = 'button';
+    var cancel = el('button', 'pill ghost small', 'Cancel');
+    cancel.type = 'button';
+    var acts = el('div', 'sk-acts');
+    acts.appendChild(save); acts.appendChild(cancel);
+    head.appendChild(inp); head.appendChild(acts);
+    inp.focus(); inp.select();
+    function doSave() {
+      var name = inp.value.trim();
+      if (!name || name === g) { renderSkills(); return; }
+      var rows = state.skills.filter(function (r) { return r.group_name === g; });
+      save.disabled = true;
+      Promise.all(rows.map(function (r) {
+        return API.saveRow('skills', r.id, { group_name: name }).then(function (row) { r.group_name = row.group_name; return true; }, function () { return false; });
+      })).then(function (ok) {
+        renderSkills();
+        if (ok.every(Boolean)) toast('Group renamed', 'ok');
+        else fail(null, 'Some skills could not be moved to the new name. Try again.');
+      });
+    }
+    save.addEventListener('click', doSave);
+    cancel.addEventListener('click', renderSkills);
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); doSave(); } else if (e.key === 'Escape') renderSkills(); });
+  }
+  function newGroup() {
+    var g = $('skGroup');
+    g.value = '';
+    $('skillForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    g.focus();
+    toast('Type the new group name, add its first skill, then click Add skill.', 'ok');
   }
   function addSkill(ev) {
     ev.preventDefault();
@@ -618,6 +663,7 @@
     $('recent').addEventListener('click', onPick);
 
     $('skillForm').addEventListener('submit', addSkill);
+    $('skNewGroup').addEventListener('click', newGroup);
     $('expAdd').addEventListener('click', function () {
       if (!state.expLoaded) { toast('Still loading. Try again in a moment.', 'err'); return; }
       state.draft = { role: '', company: '', start_label: '', end_label: '', is_current: false, bullets: '', visible: true, track: 'both' };
