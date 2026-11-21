@@ -423,13 +423,6 @@
     cancel.addEventListener('click', renderSkills);
     inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); doSave(); } else if (e.key === 'Escape') renderSkills(); });
   }
-  function newGroup() {
-    var g = $('skGroup');
-    g.value = '';
-    $('skillForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    g.focus();
-    toast('Type the new group name, add its first skill, then click Add skill.', 'ok');
-  }
   function addSkill(ev) {
     ev.preventDefault();
     var name = $('skName').value.trim(), group = $('skGroup').value.trim();
@@ -663,7 +656,6 @@
     $('recent').addEventListener('click', onPick);
 
     $('skillForm').addEventListener('submit', addSkill);
-    $('skNewGroup').addEventListener('click', newGroup);
     $('expAdd').addEventListener('click', function () {
       if (!state.expLoaded) { toast('Still loading. Try again in a moment.', 'err'); return; }
       state.draft = { role: '', company: '', start_label: '', end_label: '', is_current: false, bullets: '', visible: true, track: 'both' };
