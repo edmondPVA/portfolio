@@ -259,8 +259,8 @@ body:has(dialog[open]){overflow:hidden;}
 @media (max-width:820px){.crm-split{grid-template-columns:minmax(0,1fr);} .crm-mod.on{transform:none;}}
 @media (prefers-reduced-motion:reduce){.crm-mod,#crmChips .chip,.crm-mod span{transition:none;}}
 /* Expandable screenshots in the CRM walkthrough */
-#crmModal .cs-media:has(img){position:relative;}
-#crmModal .cs-media img{cursor:zoom-in;}
+#crmModal .cs-media:has(img),#sdModal .cs-media:has(img){position:relative;}
+#crmModal .cs-media img,#sdModal .cs-media img{cursor:zoom-in;}
 .zm-hint{position:absolute; right:10px; bottom:10px; width:30px; height:30px; border-radius:50%; background:rgba(44,62,80,.72); display:grid; place-items:center; pointer-events:none;}
 .zm-hint svg{width:16px; height:16px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
 .zm{border:0; padding:0; background:transparent; width:100vw; max-width:100vw; height:100dvh; max-height:100dvh; overflow:hidden; color:#fff;}
@@ -268,7 +268,7 @@ body:has(dialog[open]){overflow:hidden;}
 .zm-in{width:100%; height:100%; display:grid; place-items:center; padding:max(56px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px)); cursor:zoom-out;}
 .zm img{max-width:100%; max-height:100%; object-fit:contain; border-radius:12px; box-shadow:0 24px 60px rgba(0,0,0,.45);}
 .zm-x{position:absolute; top:max(12px,env(safe-area-inset-top,0px)); right:max(12px,env(safe-area-inset-right,0px)); width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.4); background:rgba(44,62,80,.7); color:#fff; font-size:22px; line-height:1; cursor:pointer;}
-.zm-x:focus-visible,#crmModal .cs-media img:focus-visible{outline:3px solid var(--yel); outline-offset:3px;}
+.zm-x:focus-visible,#crmModal .cs-media img:focus-visible,#sdModal .cs-media img:focus-visible{outline:3px solid var(--yel); outline-offset:3px;}
 /* Margin effects: data streams + task checks (wide screens only) */
 .edge{position:fixed; top:0; bottom:0; width:calc((100vw - 1240px) / 2); pointer-events:none; z-index:-1; overflow:hidden; display:none;}
 .edge.l{left:0;} .edge.r{right:0;}
@@ -474,6 +474,20 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
   .score.go .sr,.score.go .sic.ring .val,.sr.pop b,.sr.pop .sic.ring .val,.sr:hover .bug svg{animation:none;}
   .sr,.sr .sic{transition:none;} .sr:hover,.sr:hover .sic{transform:none;}
 }
+/* SauceDemo regression suite: project card + case study */
+.sd-run{background:var(--page); border:1px solid var(--line); border-radius:18px; padding:14px; display:flex; flex-direction:column; gap:8px; min-width:0; font-size:14px;}
+.sd-run-h{display:flex; justify-content:space-between; align-items:center; gap:10px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; color:var(--soft); padding:2px 4px 6px;}
+.sd-row{display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:center; background:var(--tile); border:1px solid var(--line); border-radius:12px; padding:9px 12px;}
+.sd-row code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; font-weight:700; padding:3px 8px; border-radius:8px; background:var(--mint); color:var(--mint-fg);}
+.sd-row span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.sd-row small{font-size:12px; color:var(--soft); white-space:nowrap;}
+.sd-sum{display:flex; justify-content:space-between; gap:10px; font-weight:700; padding:6px 4px 0; font-size:14px;}
+.sd-cap{font-size:12px; color:var(--soft); margin:0; text-align:right;}
+.sd-btns{display:flex; flex-wrap:wrap; gap:10px;}
+.sd-btns .pill.ghost{color:inherit;}
+.sd-ph{aspect-ratio:16/9; border:2px dashed var(--line); border-radius:18px; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px; color:var(--soft); font-size:14px; margin-top:6px;}
+.cs-c pre.sd-code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; line-height:1.55; background:var(--page); color:var(--fg); border-radius:14px; padding:14px 16px; overflow:auto; margin:8px 0 0; white-space:pre;}
+@media (max-width:480px){.sd-row{grid-template-columns:auto minmax(0,1fr);} .sd-row small{display:none;}}
 </style>
 </head>
 <body data-view="home">
@@ -625,6 +639,31 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
     </div>
   </div>
 
+  <div class="t s6" id="sd-regression" data-v="qa">
+    <div class="feat-grid">
+      <div>
+        <p class="eyebrow">Automation project &middot; Personal project</p>
+        <h2>SauceDemo Regression Suite</h2>
+        <p>An automated UI regression suite I built with Playwright and pytest. It checks the main shopping journey on the SauceDemo test site, from login to order confirmation, in one command.</p>
+        <p style="margin-top:12px">It's organized with the Page Object Model, so when a screen changes I update one file, not every test.</p>
+        <ul class="feat-stats"><li><b>31</b>automated tests</li><li><b>4</b>feature areas</li><li><b>5</b>smoke checks</li></ul>
+        <div class="chips" style="margin:0 0 20px"><span class="chip">Playwright</span><span class="chip">pytest</span><span class="chip">Python</span><span class="chip">Page Object Model</span><span class="chip">Regression testing</span></div>
+        <div class="sd-btns">
+          <button class="pill feat-btn" type="button" id="sdOpen">Start walkthrough</button>
+          <a class="pill ghost" href="https://github.com/edmondPVA/SDRegression-automation" target="_blank" rel="noopener">View code on GitHub</a>
+        </div>
+      </div>
+      <div class="sd-run" role="img" aria-label="Illustration of a test run: login, inventory, cart and checkout tests all passed">
+        <div class="sd-run-h"><span>$ pytest</span><span>Firefox</span></div>
+        <div class="sd-row"><code>PASSED</code><span>Login: valid, empty and locked-out users</span><small>7 tests</small></div>
+        <div class="sd-row"><code>PASSED</code><span>Inventory: sorting, cart badge, product details</span><small>15 tests</small></div>
+        <div class="sd-row"><code>PASSED</code><span>Cart: added items, remove, continue shopping</span><small>4 tests</small></div>
+        <div class="sd-row"><code>PASSED</code><span>Checkout: required fields, full order</span><small>5 tests</small></div>
+        <div class="sd-sum"><span>31 passed</span><span>0 failed</span></div>
+        <p class="sd-cap">Illustration of a full run</p>
+      </div>
+    </div>
+  </div>
   <div class="case-head" id="case-studies" data-v="va">
     <div><p class="eyebrow" style="margin:0 0 6px">Case studies</p><h2>The CRM project, in two parts</h2></div>
     <p>I built a practice CRM, then connected it to n8n so its events run on their own.</p>
@@ -1272,6 +1311,111 @@ body[data-view="va"] .nx-va,body[data-view="qa"] .nx-qa{display:none;}
   </div>
 </dialog>
 
+<dialog class="modal cs-modal" id="sdModal" aria-labelledby="sdTitle">
+  <div class="cs-in" id="sdIn" tabindex="-1">
+    <header class="cs-bar">
+      <div class="cs-now"><small>Automation project</small><b id="sdTitle" aria-live="polite">Overview</b></div>
+      <div class="cs-act">
+        <button class="pill" type="button" data-open-contact>Email me</button>
+        <button class="x-btn" type="button" id="sdClose" aria-label="Close automation project">&times;</button>
+      </div>
+    </header>
+
+    <div class="cs-stage" id="sdStage">
+
+      <section class="cs-slide is-on" data-title="Overview">
+        <div class="cs-grid">
+          <div class="cs-c cs-w cs-blue">
+            <p class="eyebrow">Automation project &middot; Personal project</p>
+            <h1>SauceDemo Regression Suite</h1>
+            <p style="font-size:17px;max-width:560px">I automated the regression checks for a demo online store. One command now tests login, products, cart and checkout, and saves evidence when something breaks.</p>
+            <div class="cs-row"><button class="pill y" type="button" data-cs-go="1">Start</button></div>
+          </div>
+          <div class="cs-c cs-t cs-yel"><div class="cs-big">31</div><p>automated tests across the shopping journey</p></div>
+          <div class="cs-c cs-t"><div class="cs-big">4</div><p>feature areas: login, inventory, cart, checkout</p></div>
+          <div class="cs-c cs-t cs-mint"><div class="cs-big">5</div><p>smoke checks for a quick sanity run</p></div>
+          <div class="cs-c cs-w"><p class="eyebrow">In this walkthrough</p><div class="cs-tags"><span class="cs-tag">The problem</span><span class="cs-tag">What I test</span><span class="cs-tag">How it's built</span><span class="cs-tag">Proof</span><span class="cs-tag">When a test fails</span><span class="cs-tag">What I learned</span></div></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="The problem">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">The problem</p><h2>Manual regression is slow and easy to skip.</h2><p>Before every release, someone has to re-check that the features that already worked still work. Done by hand, it's the same clicks every time.</p></div>
+          <div class="cs-c cs-t"><h3>It takes time</h3><p>Logging in, sorting, adding to cart and checking out, over and over for each release.</p></div>
+          <div class="cs-c cs-t"><h3>Steps get missed</h3><p>When a deadline is close, the "it worked last time" checks are the first to be skipped.</p></div>
+          <div class="cs-c cs-t"><h3>Results vary</h3><p>Two testers can check the same screen in different ways. A script checks it the same way every time.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="What I test">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">What I test</p><h2>The full shopping journey, in four areas.</h2></div>
+          <div class="cs-c cs-yel"><h3>Login &middot; 7 tests</h3><p>Page loads, valid login, empty fields, wrong password and a locked-out user, each with the right error message.</p></div>
+          <div class="cs-c"><h3>Inventory &middot; 15 tests</h3><p>Menu links, sorting by name and price, the cart badge count, add and remove buttons, and product details.</p></div>
+          <div class="cs-c"><h3>Cart &middot; 4 tests</h3><p>Added items show up with the right names, items can be removed, and Continue Shopping goes back.</p></div>
+          <div class="cs-c cs-mint"><h3>Checkout &middot; 5 tests</h3><p>Each required field is checked, then a full order goes through to the confirmation page.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="How it's built">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">How it's built</p><h2>Page objects, shared setup, reusable checks.</h2></div>
+          <div class="cs-c cs-t"><h3>Page Object Model</h3><p>Each screen has its own file in <code>pages/</code> with its locators and actions. If a button changes, I fix it in one place.</p></div>
+          <div class="cs-c cs-t"><h3>Shared fixtures</h3><p><code>conftest.py</code> handles login and getting to checkout, so each test starts where it needs to and stays short.</p></div>
+          <div class="cs-c cs-t"><h3>Parametrized tests</h3><p>One test checks several inputs, like every login error, without copying the same code.</p></div>
+          <div class="cs-c cs-w">
+            <p class="eyebrow">Example: one test, four login errors</p>
+<pre class="sd-code">@pytest.mark.parametrize("user, pwd, message", [
+    ("", "secret_sauce", "Username is required"),
+    ("standard_user", "", "Password is required"),
+    ("normal_user", "secret_password", "Username and password do not match"),
+    ("locked_out_user", "secret_sauce", "this user has been locked out"),
+])
+def test_login_errors(page, user, pwd, message): ...</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="Proof">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">Proof</p><h2>See it run.</h2><p>Recorded and captured on my PC. Click a screenshot to enlarge it.</p></div>
+          <div class="cs-c cs-w"><div class="cs-media"><video controls playsinline muted preload="none" poster="assets/sd-regression/poster.jpg" src="assets/sd-regression/run.mp4" aria-label="Screen recording: the checkout tests running in a visible Firefox window, then the smoke run and the rest of the suite in the PyCharm terminal"></video></div><h3>Video</h3><p>First, <code>pytest tests/test_checkout.py --headed</code> so you can watch Firefox log in, shop and check out by itself. Then the suite split in two: <code>pytest -m smoke</code> (5 passed in 8 seconds) and <code>pytest -m "not smoke"</code> (the other 26 passed).</p></div>
+          <div class="cs-c"><div class="cs-media"><img src="assets/sd-regression/full-run.jpg" loading="lazy" alt="PyCharm terminal after running pytest: 31 tests collected, 31 passed in 46.79 seconds"></div><h3>Full regression run</h3><p>All 31 tests passed in about 47 seconds.</p></div>
+          <div class="cs-c"><div class="cs-media"><img src="assets/sd-regression/smoke-run.jpg" loading="lazy" alt="PyCharm terminal after running pytest -m smoke: 5 passed, 26 deselected in 8.44 seconds"></div><h3>Smoke run</h3><p>The 5 quick sanity checks passed in about 8 seconds, for a fast "is the site basically working?" answer.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="When a test fails">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">When a test fails</p><h2>Evidence is saved automatically.</h2><p>A failed test is only useful if you can see why. The suite keeps what a developer needs to reproduce the bug.</p></div>
+          <div class="cs-c cs-t cs-yel"><h3>Screenshot</h3><p>The exact screen at the moment the test failed.</p></div>
+          <div class="cs-c cs-t"><h3>Video and trace</h3><p>A recording plus a step-by-step trace I can replay with <code>playwright show-trace</code>.</p></div>
+          <div class="cs-c cs-t cs-mint"><h3>JUnit report</h3><p>A <code>junit.xml</code> file that other tools can read to show what passed and failed.</p></div>
+        </div>
+      </section>
+
+      <section class="cs-slide" data-title="What I learned">
+        <div class="cs-grid">
+          <div class="cs-c cs-w"><p class="eyebrow">Wrap-up</p><h2>What I learned</h2></div>
+          <div class="cs-c cs-t cs-yel"><h3>Every test needs a check</h3><p>A test that clicks through without asserting anything always passes. I went back and added a clear check to each one.</p></div>
+          <div class="cs-c cs-t"><h3>Structure saves time</h3><p>Page objects and fixtures made new tests quick to add and easy to read.</p></div>
+          <div class="cs-c cs-t cs-mint"><h3>Manual skills carry over</h3><p>My test case writing as a manual tester shaped what each automated test covers.</p></div>
+          <div class="cs-c cs-w cs-blue">
+            <p class="eyebrow">Let's talk</p>
+            <p style="font-size:17px;max-width:560px">Need regression checks that run the same way every release? Let's talk.</p>
+            <div class="cs-row"><button class="pill y" type="button" data-open-contact>Email me</button><a class="pill ghost" href="https://github.com/edmondPVA/SDRegression-automation" target="_blank" rel="noopener">View code</a><button class="pill ghost" type="button" data-cs-go="0">Replay</button></div>
+            <p style="font-size:13px;margin:18px 0 0">Note: SauceDemo is a public demo store made for testing practice. This is a personal project, not client work.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="cs-ctrl"><div class="cs-dots" id="sdDots"></div><span class="cs-count" id="sdCount"></span></div>
+    <button class="cs-ar cs-prev" id="sdPrev" type="button" aria-label="Previous slide">&larr;</button>
+    <button class="cs-ar cs-next" id="sdNext" type="button" aria-label="Next slide">&rarr;</button>
+  </div>
+</dialog>
+
 <script>
 (function(){
   var root = document.documentElement;
@@ -1589,6 +1733,7 @@ function csInit(P){
 csInit('cs');
 csInit('crm');
 csInit('ev');
+csInit('sd');
 // Chapter buttons under the CRM events video: jump to a part and play.
 (function(){
   var v = document.getElementById('evVideo');
@@ -1691,7 +1836,7 @@ csInit('ev');
   if(!crm||!zm||typeof zm.showModal!=='function') return;
   var big=document.getElementById('shotImg'), last=null;
   var icon='<span class="zm-hint" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>';
-  Array.prototype.forEach.call(crm.querySelectorAll('.cs-media img'),function(im){
+  Array.prototype.forEach.call(document.querySelectorAll('#crmModal .cs-media img, #sdModal .cs-media img'),function(im){
     im.tabIndex=0; im.setAttribute('role','button'); im.setAttribute('aria-label','Expand screenshot: '+im.alt);
     im.parentNode.insertAdjacentHTML('beforeend',icon);
     function open(){last=im; big.src=im.currentSrc||im.src; big.alt=im.alt; zm.showModal(); document.getElementById('shotClose').focus({preventScroll:true});}
